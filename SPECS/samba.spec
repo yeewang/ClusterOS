@@ -101,10 +101,17 @@ Source0:        samba-%{version}%{pre_release}.tar.gz
 
 # Red Hat specific replacement-files
 Source1: samba.log
+Source2: samba.xinetd
 Source4: smb.conf.default
 Source5: pam_winbind.conf
 Source6: samba.pamd
+Source7: samba4.sysconfig
 
+Source100: nmb.init
+Source101: smb.init
+Source102: winbind.init
+
+Source200: README.dc
 Source201: README.downgrade
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -776,20 +783,20 @@ install -d -m 0755 %{buildroot}/var/lib/samba/private
 install -d -m 0755 %{buildroot}/var/log
 install -d -m 0755 %{buildroot}/var/log/samba
 install -d -m 0755 %{buildroot}/var/log/samba/old
-install -d -m 0755 %{buildroot}/etc/sysconfig
-install -d -m 0755 %{buildroot}/etc/ctdb
-install -d -m 0755 %{buildroot}/etc/ctdb/nfs-checks.d
-install -d -m 0755 %{buildroot}/etc/ctdb/notify.d
-install -d -m 0755 %{buildroot}/etc/ctdb/events.d
-install -d -m 0755 %{buildroot}/etc/samba
-install -d -m 0755 %{buildroot}/etc/NetworkManager
-install -d -m 0755 %{buildroot}/etc/NetworkManager/dispatcher.d
-install -d -m 0755 %{buildroot}/etc/openldap
-install -d -m 0755 %{buildroot}/etc/openldap/schema
-install -d -m 0755 %{buildroot}/etc/pam.d
-install -d -m 0755 %{buildroot}/etc/sudoers.d
-install -d -m 0755 %{buildroot}/etc/security
-install -d -m 0755 %{buildroot}/etc/logrotate.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/sysconfig
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/ctdb
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/ctdb/nfs-checks.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/ctdb/notify.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/ctdb/events.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/samba
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/NetworkManager
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/NetworkManager/dispatcher.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/openldap
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/openldap/schema
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/pam.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/sudoers.d
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/security
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/logrotate.d
 install -d -m 0755 %{buildroot}/usr/bin
 install -d -m 0755 %{buildroot}/usr/sbin
 install -d -m 0755 %{buildroot}/usr/share
@@ -839,25 +846,25 @@ install -d -m 0755 %{buildroot}/%{_libdir}/samba/auth
 install -d -m 0755 %{buildroot}/%{_libdir}/samba/nss_info
 install -d -m 0755 %{buildroot}/%{_libdir}/python2.6
 install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/netcmd
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/kcc
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/provision
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/tests
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/tests/blackbox
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/tests/kcc
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/tests/samba_tool
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/tests/dcerpc
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/web_server
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/third_party
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/third_party/iso8601
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/third_party/dns
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/third_party/dns/rdtypes
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/third_party/dns/rdtypes/IN
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/subunit
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/dcerpc
-install -d -m 0755 %{buildroot}/%{_libdir}/python2.6/site-packages/samba/samba3
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/netcmd
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/kcc
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/provision
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/tests
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/tests/blackbox
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/tests/kcc
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/tests/samba_tool
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/tests/dcerpc
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/web_server
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/third_party
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/third_party/iso8601
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/third_party/dns
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/third_party/dns/rdtypes
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/third_party/dns/rdtypes/IN
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/third_party/dns/rdtypes/ANY
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/subunit
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/dcerpc
+install -d -m 0755 %{buildroot}/%{python_sitearch}/samba/samba3
 install -d -m 0755 %{buildroot}/%{_libdir}/krb5
 install -d -m 0755 %{buildroot}/%{_libdir}/krb5/plugins
 install -d -m 0755 %{buildroot}/%{_libdir}/krb5/plugins/libkrb5
@@ -866,1646 +873,1816 @@ install -d -m 0755 %{buildroot}/%{_libdir}/pkgconfig
 install -d -m 0755 %{buildroot}/%{_libdir}/security
 install -d -m 0755 %{buildroot}/%{_libdir}/ctdb-tests
 
+# Install other stuff
+install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/samba
+install -m 0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/samba/smb.conf
+install -m 0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/security/pam_winbind.conf
+install -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/pam.d/samba
+
+echo 127.0.0.1 localhost > %{buildroot}%{_sysconfdir}/samba/lmhosts
+
+install -d -m 0755 %{buildroot}%{_sysconfdir}/openldap/schema
+install -m644 examples/LDAP/samba.schema %{buildroot}%{_sysconfdir}/openldap/schema/samba.schema
+
+install -d -m 0755 %{buildroot}%{_sysconfdir}/xinetd.d
+install -m644 %{SOURCE2} %{buildroot}%{_sysconfdir}/xinetd.d/swat
+
+install -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
+install -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/sysconfig/samba
+
+install -d -m 0755 %{buildroot}%{_defaultdocdir}/%{name}
+install -m 0644 %{SOURCE201} %{buildroot}%{_defaultdocdir}/%{name}/README.downgrade
+
+%if ! %with_dc
+install -m 0644 %{SOURCE200} %{buildroot}%{_defaultdocdir}/%{name}/README.dc
+install -m 0644 %{SOURCE200} %{buildroot}%{_defaultdocdir}/%{name}/README.dc-libs
+%endif
+
+install -d -m 0755 %{buildroot}%{_initrddir}
+install -m 0755 %{SOURCE100} %{buildroot}%{_initrddir}/nmb
+install -m 0755 %{SOURCE101} %{buildroot}%{_initrddir}/smb
+install -m 0755 %{SOURCE102} %{buildroot}%{_initrddir}/winbind
+
+# winbind krb5 locator
+install -d -m 0755 %{buildroot}%{_libdir}/krb5/plugins/libkrb5
+touch %{buildroot}%{_libdir}/krb5/plugins/libkrb5/winbind_krb5_locator.so
+
+# cleanup stuff that does not belong here
+rm -f %{buildroot}/%{_mandir}/man3/ldb.3*
+rm -f %{buildroot}/%{_mandir}/man3/talloc.3*
+
+# Clean out crap left behind by the PIDL install.
+find %{buildroot} -type f -name .packlist -exec rm -f {} \;
+rm -f %{buildroot}%{perl_vendorlib}/wscript_build
+rm -rf %{buildroot}%{perl_vendorlib}/Parse/Yapp
+
+# This makes the right links, as rpmlint requires that
+# the ldconfig-created links be recorded in the RPM.
+/sbin/ldconfig -N -n %{buildroot}%{_libdir}
+
+# Fix up permission on perl install.
+%{_fixperms} %{buildroot}%{perl_vendorlib}
+
+# Remove stuff the buildsystem did not handle correctly
+rm -f %{buildroot}/%{smb_lib}/security/pam_smbpass.so
+rm -f %{buildroot}%{python_sitelib}/tevent.py
+
+%if ! %with_libwbclient
+ln -sf libwbclient.so.0 %{buildroot}%{_libdir}/samba/libwbclient.so
+%endif
+
+%post
+/sbin/chkconfig --add smb
+/sbin/chkconfig --add nmb
+if [ "$1" -ge "1" ]; then
+    /sbin/service smb condrestart >/dev/null 2>&1 || :
+    /sbin/service nmb condrestart >/dev/null 2>&1 || :
+fi
+exit 0
+
+%preun
+if [ $1 = 0 ] ; then
+    /sbin/service smb stop >/dev/null 2>&1 || :
+    /sbin/service nmb stop >/dev/null 2>&1 || :
+    /sbin/chkconfig --del smb
+    /sbin/chkconfig --del nmb
+fi
+exit 0
+
+%post libs -p /sbin/ldconfig
+
+%postun libs -p /sbin/ldconfig
+
+%if %with_dc
+%post dc-libs -p /sbin/ldconfig
+
+%postun dc-libs -p /sbin/ldconfig
+%endif # with_dc
+
+%post test -p /sbin/ldconfig
+
+%postun test -p /sbin/ldconfig
+
+%pre winbind
+/usr/sbin/groupadd -g 88 wbpriv >/dev/null 2>&1 || :
+
+%post winbind
+/sbin/chkconfig --add winbind
+if [ "$1" -ge "1" ]; then
+    /sbin/service winbind condrestart >/dev/null 2>&1 || :
+fi
+exit 0
+
+%preun winbind
+if [ $1 = 0 ] ; then
+    /sbin/service winbind stop >/dev/null 2>&1 || :
+    /sbin/chkconfig --del winbind
+fi
+exit 0
+
+%post common -p /sbin/ldconfig
+
+%postun common -p /sbin/ldconfig
+
+%post winbind-clients -p /sbin/ldconfig
+
+%postun winbind-clients -p /sbin/ldconfig
+
+%if %with_libsmbclient
+%post -n libsmbclient -p /sbin/ldconfig
+
+%postun -n libsmbclient -p /sbin/ldconfig
+%endif # with_libsmbclient
+
+%if %with_libwbclient
+%post -n libwbclient -p /sbin/ldconfig
+
+%postun -n libwbclient -p /sbin/ldconfig
+%endif # with_libwbclient
+
+%postun winbind-krb5-locator
+if [ "$1" -ge "1" ]; then
+        if [ "`readlink %{_sysconfdir}/alternatives/winbind_krb5_locator.so`" == "%{_libdir}/winbind_krb5_locator.so" ]; then
+                %{_sbindir}/update-alternatives --set winbind_krb5_locator.so %{_libdir}/winbind_krb5_locator.so
+        fi
+fi
+
+%post winbind-krb5-locator
+%{_sbindir}/update-alternatives --install %{_libdir}/krb5/plugins/libkrb5/winbind_krb5_locator.so \
+                                winbind_krb5_locator.so %{_libdir}/winbind_krb5_locator.so 10
+
+%preun winbind-krb5-locator
+if [ $1 -eq 0 ]; then
+        %{_sbindir}/update-alternatives --remove winbind_krb5_locator.so %{_libdir}/winbind_krb5_locator.so
+fi
+
 %clean
-##rm -rf %{buildroot}
+rm -rf %{buildroot}
+
+%doc COPYING
+%{_bindir}/smbstatus
+%{_bindir}/eventlogadm
+%{_sbindir}/nmbd
+%{_sbindir}/smbd
+%{_libdir}/samba/auth
+%{_libdir}/samba/vfs
+%config(noreplace) %{_sysconfdir}/pam.d/samba
+%attr(1777,root,root) %dir /var/spool/samba
+%dir %{_sysconfdir}/openldap/schema
+%{_sysconfdir}/openldap/schema/samba.schema
+%{_initrddir}/nmb
+%{_initrddir}/smb
+%doc %{_defaultdocdir}/%{name}/README.downgrade
+%{_mandir}/man1/smbstatus.1*
+%{_mandir}/man8/eventlogadm.8*
+%{_mandir}/man8/smbd.8*
+%{_mandir}/man8/nmbd.8*
+%{_mandir}/man8/vfs_*.8*
 
 ### COMMON
 %files
 %defattr(-,root,root)
-%dir %{_prefix}/lib/tmpfiles.d
-#%{_prefix}/lib/tmpfiles.d/ctdb.conf
-#%{_prefix}/lib/tmpfiles.d/samba.conf
-%dir %{_sysconfdir}/logrotate.d/
-#%config(noreplace) %{_sysconfdir}/logrotate.d/samba
+#%{_libdir}/samba/charset ???
+%{_bindir}/net
+%{_bindir}/pdbedit
+%{_bindir}/profiles
+%{_bindir}/smbcontrol
+%{_bindir}/testparm
+%{_datadir}/samba/codepages
+%config(noreplace) %{_sysconfdir}/logrotate.d/samba
 %attr(0700,root,root) %dir /var/log/samba
 %attr(0700,root,root) %dir /var/log/samba/old
-%ghost %dir /var/run/samba
-%ghost %dir /var/run/winbindd
+%dir /var/run/samba
+%dir /var/run/winbindd
 %attr(700,root,root) %dir /var/lib/samba/private
 %attr(755,root,root) %dir %{_sysconfdir}/samba
-#%config(noreplace) %{_sysconfdir}/samba/smb.conf
-#%config(noreplace) %{_sysconfdir}/samba/lmhosts
-#%config(noreplace) %{_sysconfdir}/sysconfig/samba
+%config(noreplace) %{_sysconfdir}/samba/smb.conf
+%config(noreplace) %{_sysconfdir}/samba/lmhosts
+%config(noreplace) %{_sysconfdir}/sysconfig/samba
+%{_mandir}/man1/profiles.1*
+%{_mandir}/man1/smbcontrol.1*
+%{_mandir}/man1/testparm.1*
 %{_mandir}/man5/lmhosts.5*
 %{_mandir}/man5/smb.conf.5*
 %{_mandir}/man5/smbpasswd.5*
 %{_mandir}/man7/samba.7*
+%{_mandir}/man8/net.8*
+%{_mandir}/man8/pdbedit.8*
 
 %if %with_pam_smbpass
 %{_libdir}/security/pam_smbpass.so
 %endif
-
 
 ### SAMBA
 
 ## SAMBA bins
 %files
 %defattr(-,root,root)
-   /usr/bin/cifsdd
-   /usr/bin/ctdb
-   /usr/bin/ctdb_diagnostics
-   /usr/bin/ctdb_event_helper
-   /usr/bin/ctdb_lock_helper
-   /usr/bin/ctdb_run_cluster_tests
-   /usr/bin/ctdb_run_tests
-   /usr/bin/dbwrap_tool
-   /usr/bin/eventlogadm
-   /usr/bin/gentest
-   /usr/bin/ldbadd
-   /usr/bin/ldbdel
-   /usr/bin/ldbedit
-   /usr/bin/ldbmodify
-   /usr/bin/ldbrename
-   /usr/bin/ldbsearch
-   /usr/bin/locktest
-   /usr/bin/ltdbtool
-   /usr/bin/masktest
-   /usr/bin/ndrdump
-   /usr/bin/net
-   /usr/bin/nmblookup
-   /usr/bin/ntlm_auth
-   /usr/bin/oLschema2ldif
-   /usr/bin/onnode
-   /usr/bin/pdbedit
-   /usr/bin/pidl
-   /usr/bin/ping_pong
-   /usr/bin/profiles
-   /usr/bin/regdiff
-   /usr/bin/regpatch
-   /usr/bin/regshell
-   /usr/bin/regtree
-   /usr/bin/rpcclient
-   /usr/bin/samba-regedit
-   /usr/bin/samba-tool
-   /usr/bin/sharesec
-   /usr/bin/smbcacls
-   /usr/bin/smbclient
-   /usr/bin/smbcontrol
-   /usr/bin/smbcquotas
-   /usr/bin/smbget
-   /usr/bin/smbpasswd
-   /usr/bin/smbspool
-   /usr/bin/smbstatus
-   /usr/bin/smbta-util
-   /usr/bin/smbtar
-   /usr/bin/smbtorture
-   /usr/bin/smbtree
-   /usr/bin/smnotify
-   /usr/bin/tdbbackup
-   /usr/bin/tdbdump
-   /usr/bin/tdbrestore
-   /usr/bin/tdbtool
-   /usr/bin/testparm
-   /usr/bin/wbinfo
+%{_bindir}/cifsdd
+%{_bindir}/ctdb
+%{_bindir}/ctdb_diagnostics
+%{_bindir}/ctdb_event_helper
+%{_bindir}/ctdb_lock_helper
+%{_bindir}/ctdb_run_cluster_tests
+%{_bindir}/ctdb_run_tests
+%{_bindir}/dbwrap_tool
+%{_bindir}/eventlogadm
+%{_bindir}/gentest
+%{_bindir}/ldbadd
+%{_bindir}/ldbdel
+%{_bindir}/ldbedit
+%{_bindir}/ldbmodify
+%{_bindir}/ldbrename
+%{_bindir}/ldbsearch
+%{_bindir}/locktest
+%{_bindir}/ltdbtool
+%{_bindir}/masktest
+%{_bindir}/ndrdump
+%{_bindir}/net
+%{_bindir}/nmblookup
+%{_bindir}/ntlm_auth
+%{_bindir}/oLschema2ldif
+%{_bindir}/onnode
+%{_bindir}/pdbedit
+%{_bindir}/pidl
+%{_bindir}/ping_pong
+%{_bindir}/profiles
+%{_bindir}/regdiff
+%{_bindir}/regpatch
+%{_bindir}/regshell
+%{_bindir}/regtree
+%{_bindir}/rpcclient
+%{_bindir}/samba-regedit
+%{_bindir}/samba-tool
+%{_bindir}/sharesec
+%{_bindir}/smbcacls
+%{_bindir}/smbclient
+%{_bindir}/smbcontrol
+%{_bindir}/smbcquotas
+%{_bindir}/smbget
+%{_bindir}/smbpasswd
+%{_bindir}/smbspool
+%{_bindir}/smbstatus
+%{_bindir}/smbta-util
+%{_bindir}/smbtar
+%{_bindir}/smbtorture
+%{_bindir}/smbtree
+%{_bindir}/smnotify
+%{_bindir}/tdbbackup
+%{_bindir}/tdbdump
+%{_bindir}/tdbrestore
+%{_bindir}/tdbtool
+%{_bindir}/testparm
+%{_bindir}/wbinfo
    
 ## sbin
 %defattr(-,root,root)
-   /usr/sbin/ctdbd
-   /usr/sbin/ctdbd_wrapper
-   /usr/sbin/nmbd
-   /usr/sbin/samba
-   /usr/sbin/samba_dnsupdate
-   /usr/sbin/samba_kcc
-   /usr/sbin/samba_spnupdate
-   /usr/sbin/samba_upgradedns
-   /usr/sbin/smbd
-   /usr/sbin/winbindd
+%{_sbindir}/ctdbd
+%{_sbindir}/ctdbd_wrapper
+%{_sbindir}/nmbd
+%{_sbindir}/samba
+%{_sbindir}/samba_dnsupdate
+%{_sbindir}/samba_kcc
+%{_sbindir}/samba_spnupdate
+%{_sbindir}/samba_upgradedns
+%{_sbindir}/smbd
+%{_sbindir}/winbindd
    
 ## ctdb
 %defattr(-,root,root)   
-   /etc/ctdb/ctdb-crash-cleanup.sh
-   /etc/ctdb/debug-hung-script.sh
-   /etc/ctdb/debug_locks.sh
-   /etc/ctdb/events.d/00.ctdb
-   /etc/ctdb/events.d/01.reclock
-   /etc/ctdb/events.d/10.external
-   /etc/ctdb/events.d/10.interface
-   /etc/ctdb/events.d/11.natgw
-   /etc/ctdb/events.d/11.routing
-   /etc/ctdb/events.d/13.per_ip_routing
-   /etc/ctdb/events.d/20.multipathd
-   /etc/ctdb/events.d/31.clamd
-   /etc/ctdb/events.d/40.fs_use
-   /etc/ctdb/events.d/40.vsftpd
-   /etc/ctdb/events.d/41.httpd
-   /etc/ctdb/events.d/49.winbind
-   /etc/ctdb/events.d/50.samba
-   /etc/ctdb/events.d/60.nfs
-   /etc/ctdb/events.d/62.cnfs
-   /etc/ctdb/events.d/70.iscsi
-   /etc/ctdb/events.d/91.lvs
-   /etc/ctdb/events.d/99.timeout
-   /etc/ctdb/events.d/README
-   /etc/ctdb/functions
-   /etc/ctdb/gcore_trace.sh
-   /etc/ctdb/nfs-checks.d/00.portmapper.check
-   /etc/ctdb/nfs-checks.d/10.status.check
-   /etc/ctdb/nfs-checks.d/20.nfs.check
-   /etc/ctdb/nfs-checks.d/30.nlockmgr.check
-   /etc/ctdb/nfs-checks.d/40.mountd.check
-   /etc/ctdb/nfs-checks.d/50.rquotad.check
-   /etc/ctdb/nfs-checks.d/README
-   /etc/ctdb/nfs-linux-kernel-callout
-   /etc/ctdb/notify.d/README
-   /etc/ctdb/notify.sh
-   /etc/ctdb/statd-callout
-   /etc/sudoers.d/ctdb
+%{_sysconfdir}/ctdb/ctdb-crash-cleanup.sh
+%{_sysconfdir}/ctdb/debug-hung-script.sh
+%{_sysconfdir}/ctdb/debug_locks.sh
+%{_sysconfdir}/ctdb/events.d/00.ctdb
+%{_sysconfdir}/ctdb/events.d/01.reclock
+%{_sysconfdir}/ctdb/events.d/10.external
+%{_sysconfdir}/ctdb/events.d/10.interface
+%{_sysconfdir}/ctdb/events.d/11.natgw
+%{_sysconfdir}/ctdb/events.d/11.routing
+%{_sysconfdir}/ctdb/events.d/13.per_ip_routing
+%{_sysconfdir}/ctdb/events.d/20.multipathd
+%{_sysconfdir}/ctdb/events.d/31.clamd
+%{_sysconfdir}/ctdb/events.d/40.fs_use
+%{_sysconfdir}/ctdb/events.d/40.vsftpd
+%{_sysconfdir}/ctdb/events.d/41.httpd
+%{_sysconfdir}/ctdb/events.d/49.winbind
+%{_sysconfdir}/ctdb/events.d/50.samba
+%{_sysconfdir}/ctdb/events.d/60.nfs
+%{_sysconfdir}/ctdb/events.d/62.cnfs
+%{_sysconfdir}/ctdb/events.d/70.iscsi
+%{_sysconfdir}/ctdb/events.d/91.lvs
+%{_sysconfdir}/ctdb/events.d/99.timeout
+%{_sysconfdir}/ctdb/events.d/README
+%{_sysconfdir}/ctdb/functions
+%{_sysconfdir}/ctdb/gcore_trace.sh
+%{_sysconfdir}/ctdb/nfs-checks.d/00.portmapper.check
+%{_sysconfdir}/ctdb/nfs-checks.d/10.status.check
+%{_sysconfdir}/ctdb/nfs-checks.d/20.nfs.check
+%{_sysconfdir}/ctdb/nfs-checks.d/30.nlockmgr.check
+%{_sysconfdir}/ctdb/nfs-checks.d/40.mountd.check
+%{_sysconfdir}/ctdb/nfs-checks.d/50.rquotad.check
+%{_sysconfdir}/ctdb/nfs-checks.d/README
+%{_sysconfdir}/ctdb/nfs-linux-kernel-callout
+%{_sysconfdir}/ctdb/notify.d/README
+%{_sysconfdir}/ctdb/notify.sh
+%{_sysconfdir}/ctdb/statd-callout
+%{_sysconfdir}/sudoers.d/ctdb
    
 ## devel
 %defattr(-,root,root)   
-   /usr/include/samba-4.0/charset.h
-   /usr/include/samba-4.0/core/doserr.h
-   /usr/include/samba-4.0/core/error.h
-   /usr/include/samba-4.0/core/hresult.h
-   /usr/include/samba-4.0/core/ntstatus.h
-   /usr/include/samba-4.0/core/werror.h
-   /usr/include/samba-4.0/credentials.h
-   /usr/include/samba-4.0/ctdb.h
-   /usr/include/samba-4.0/ctdb_client.h
-   /usr/include/samba-4.0/ctdb_private.h
-   /usr/include/samba-4.0/ctdb_protocol.h
-   /usr/include/samba-4.0/ctdb_typesafe_cb.h
-   /usr/include/samba-4.0/ctdb_version.h
-   /usr/include/samba-4.0/dcerpc.h
-   /usr/include/samba-4.0/dcerpc_server.h
-   /usr/include/samba-4.0/dlinklist.h
-   /usr/include/samba-4.0/domain_credentials.h
-   /usr/include/samba-4.0/gen_ndr/atsvc.h
-   /usr/include/samba-4.0/gen_ndr/auth.h
-   /usr/include/samba-4.0/gen_ndr/dcerpc.h
-   /usr/include/samba-4.0/gen_ndr/drsblobs.h
-   /usr/include/samba-4.0/gen_ndr/drsuapi.h
-   /usr/include/samba-4.0/gen_ndr/epmapper.h
-   /usr/include/samba-4.0/gen_ndr/krb5pac.h
-   /usr/include/samba-4.0/gen_ndr/lsa.h
-   /usr/include/samba-4.0/gen_ndr/mgmt.h
-   /usr/include/samba-4.0/gen_ndr/misc.h
-   /usr/include/samba-4.0/gen_ndr/nbt.h
-   /usr/include/samba-4.0/gen_ndr/ndr_atsvc.h
-   /usr/include/samba-4.0/gen_ndr/ndr_atsvc_c.h
-   /usr/include/samba-4.0/gen_ndr/ndr_dcerpc.h
-   /usr/include/samba-4.0/gen_ndr/ndr_drsblobs.h
-   /usr/include/samba-4.0/gen_ndr/ndr_drsuapi.h
-   /usr/include/samba-4.0/gen_ndr/ndr_epmapper.h
-   /usr/include/samba-4.0/gen_ndr/ndr_epmapper_c.h
-   /usr/include/samba-4.0/gen_ndr/ndr_krb5pac.h
-   /usr/include/samba-4.0/gen_ndr/ndr_mgmt.h
-   /usr/include/samba-4.0/gen_ndr/ndr_mgmt_c.h
-   /usr/include/samba-4.0/gen_ndr/ndr_misc.h
-   /usr/include/samba-4.0/gen_ndr/ndr_nbt.h
-   /usr/include/samba-4.0/gen_ndr/ndr_samr.h
-   /usr/include/samba-4.0/gen_ndr/ndr_samr_c.h
-   /usr/include/samba-4.0/gen_ndr/ndr_svcctl.h
-   /usr/include/samba-4.0/gen_ndr/ndr_svcctl_c.h
-   /usr/include/samba-4.0/gen_ndr/netlogon.h
-   /usr/include/samba-4.0/gen_ndr/samr.h
-   /usr/include/samba-4.0/gen_ndr/security.h
-   /usr/include/samba-4.0/gen_ndr/server_id.h
-   /usr/include/samba-4.0/gen_ndr/svcctl.h
-   /usr/include/samba-4.0/gensec.h
-   /usr/include/samba-4.0/ldap-util.h
-   /usr/include/samba-4.0/ldap_errors.h
-   /usr/include/samba-4.0/ldap_message.h
-   /usr/include/samba-4.0/ldap_ndr.h
-   /usr/include/samba-4.0/ldb_wrap.h
-   /usr/include/samba-4.0/libsmbclient.h
-   /usr/include/samba-4.0/lookup_sid.h
-   /usr/include/samba-4.0/machine_sid.h
-   /usr/include/samba-4.0/ndr.h
-   /usr/include/samba-4.0/ndr/ndr_dcerpc.h
-   /usr/include/samba-4.0/ndr/ndr_drsblobs.h
-   /usr/include/samba-4.0/ndr/ndr_drsuapi.h
-   /usr/include/samba-4.0/ndr/ndr_nbt.h
-   /usr/include/samba-4.0/ndr/ndr_svcctl.h
-   /usr/include/samba-4.0/netapi.h
-   /usr/include/samba-4.0/param.h
-   /usr/include/samba-4.0/passdb.h
-   /usr/include/samba-4.0/policy.h
-   /usr/include/samba-4.0/pytalloc.h
-   /usr/include/samba-4.0/read_smb.h
-   /usr/include/samba-4.0/registry.h
-   /usr/include/samba-4.0/roles.h
-   /usr/include/samba-4.0/rpc_common.h
-   /usr/include/samba-4.0/samba/session.h
-   /usr/include/samba-4.0/samba/version.h
-   /usr/include/samba-4.0/samba_util.h
-   /usr/include/samba-4.0/share.h
-   /usr/include/samba-4.0/smb2.h
-   /usr/include/samba-4.0/smb2_constants.h
-   /usr/include/samba-4.0/smb2_create_blob.h
-   /usr/include/samba-4.0/smb2_lease.h
-   /usr/include/samba-4.0/smb2_lease_struct.h
-   /usr/include/samba-4.0/smb2_signing.h
-   /usr/include/samba-4.0/smb_cli.h
-   /usr/include/samba-4.0/smb_cliraw.h
-   /usr/include/samba-4.0/smb_common.h
-   /usr/include/samba-4.0/smb_composite.h
-   /usr/include/samba-4.0/smb_constants.h
-   /usr/include/samba-4.0/smb_ldap.h
-   /usr/include/samba-4.0/smb_raw.h
-   /usr/include/samba-4.0/smb_raw_interfaces.h
-   /usr/include/samba-4.0/smb_raw_signing.h
-   /usr/include/samba-4.0/smb_raw_trans2.h
-   /usr/include/samba-4.0/smb_request.h
-   /usr/include/samba-4.0/smb_seal.h
-   /usr/include/samba-4.0/smb_signing.h
-   /usr/include/samba-4.0/smb_unix_ext.h
-   /usr/include/samba-4.0/smb_util.h
-   /usr/include/samba-4.0/smbconf.h
-   /usr/include/samba-4.0/smbldap.h
-   /usr/include/samba-4.0/tdr.h
-   /usr/include/samba-4.0/torture.h
-   /usr/include/samba-4.0/tsocket.h
-   /usr/include/samba-4.0/tsocket_internal.h
-   /usr/include/samba-4.0/tstream_smbXcli_np.h
-   /usr/include/samba-4.0/util/attr.h
-   /usr/include/samba-4.0/util/blocking.h
-   /usr/include/samba-4.0/util/byteorder.h
-   /usr/include/samba-4.0/util/data_blob.h
-   /usr/include/samba-4.0/util/debug.h
-   /usr/include/samba-4.0/util/fault.h
-   /usr/include/samba-4.0/util/genrand.h
-   /usr/include/samba-4.0/util/idtree.h
-   /usr/include/samba-4.0/util/idtree_random.h
-   /usr/include/samba-4.0/util/memory.h
-   /usr/include/samba-4.0/util/safe_string.h
-   /usr/include/samba-4.0/util/signal.h
-   /usr/include/samba-4.0/util/string_wrappers.h
-   /usr/include/samba-4.0/util/substitute.h
-   /usr/include/samba-4.0/util/talloc_stack.h
-   /usr/include/samba-4.0/util/tevent_ntstatus.h
-   /usr/include/samba-4.0/util/tevent_unix.h
-   /usr/include/samba-4.0/util/tevent_werror.h
-   /usr/include/samba-4.0/util/time.h
-   /usr/include/samba-4.0/util/xfile.h
-   /usr/include/samba-4.0/util_ldb.h
-   /usr/include/samba-4.0/wbclient.h
+%{_includedir}/samba-4.0/charset.h
+%{_includedir}/samba-4.0/core/doserr.h
+%{_includedir}/samba-4.0/core/error.h
+%{_includedir}/samba-4.0/core/hresult.h
+%{_includedir}/samba-4.0/core/ntstatus.h
+%{_includedir}/samba-4.0/core/werror.h
+%{_includedir}/samba-4.0/credentials.h
+%{_includedir}/samba-4.0/ctdb.h
+%{_includedir}/samba-4.0/ctdb_client.h
+%{_includedir}/samba-4.0/ctdb_private.h
+%{_includedir}/samba-4.0/ctdb_protocol.h
+%{_includedir}/samba-4.0/ctdb_typesafe_cb.h
+%{_includedir}/samba-4.0/ctdb_version.h
+%{_includedir}/samba-4.0/dcerpc.h
+%{_includedir}/samba-4.0/dcerpc_server.h
+%{_includedir}/samba-4.0/dlinklist.h
+%{_includedir}/samba-4.0/domain_credentials.h
+%{_includedir}/samba-4.0/gen_ndr/atsvc.h
+%{_includedir}/samba-4.0/gen_ndr/auth.h
+%{_includedir}/samba-4.0/gen_ndr/dcerpc.h
+%{_includedir}/samba-4.0/gen_ndr/drsblobs.h
+%{_includedir}/samba-4.0/gen_ndr/drsuapi.h
+%{_includedir}/samba-4.0/gen_ndr/epmapper.h
+%{_includedir}/samba-4.0/gen_ndr/krb5pac.h
+%{_includedir}/samba-4.0/gen_ndr/lsa.h
+%{_includedir}/samba-4.0/gen_ndr/mgmt.h
+%{_includedir}/samba-4.0/gen_ndr/misc.h
+%{_includedir}/samba-4.0/gen_ndr/nbt.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_atsvc.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_atsvc_c.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_dcerpc.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_drsblobs.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_drsuapi.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_epmapper.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_epmapper_c.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_krb5pac.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_mgmt.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_mgmt_c.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_misc.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_nbt.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_samr.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_samr_c.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_svcctl.h
+%{_includedir}/samba-4.0/gen_ndr/ndr_svcctl_c.h
+%{_includedir}/samba-4.0/gen_ndr/netlogon.h
+%{_includedir}/samba-4.0/gen_ndr/samr.h
+%{_includedir}/samba-4.0/gen_ndr/security.h
+%{_includedir}/samba-4.0/gen_ndr/server_id.h
+%{_includedir}/samba-4.0/gen_ndr/svcctl.h
+%{_includedir}/samba-4.0/gensec.h
+%{_includedir}/samba-4.0/ldap-util.h
+%{_includedir}/samba-4.0/ldap_errors.h
+%{_includedir}/samba-4.0/ldap_message.h
+%{_includedir}/samba-4.0/ldap_ndr.h
+%{_includedir}/samba-4.0/ldb_wrap.h
+%{_includedir}/samba-4.0/libsmbclient.h
+%{_includedir}/samba-4.0/lookup_sid.h
+%{_includedir}/samba-4.0/machine_sid.h
+%{_includedir}/samba-4.0/ndr.h
+%{_includedir}/samba-4.0/ndr/ndr_dcerpc.h
+%{_includedir}/samba-4.0/ndr/ndr_drsblobs.h
+%{_includedir}/samba-4.0/ndr/ndr_drsuapi.h
+%{_includedir}/samba-4.0/ndr/ndr_nbt.h
+%{_includedir}/samba-4.0/ndr/ndr_svcctl.h
+%{_includedir}/samba-4.0/netapi.h
+%{_includedir}/samba-4.0/param.h
+%{_includedir}/samba-4.0/passdb.h
+%{_includedir}/samba-4.0/policy.h
+%{_includedir}/samba-4.0/pytalloc.h
+%{_includedir}/samba-4.0/read_smb.h
+%{_includedir}/samba-4.0/registry.h
+%{_includedir}/samba-4.0/roles.h
+%{_includedir}/samba-4.0/rpc_common.h
+%{_includedir}/samba-4.0/samba/session.h
+%{_includedir}/samba-4.0/samba/version.h
+%{_includedir}/samba-4.0/samba_util.h
+%{_includedir}/samba-4.0/share.h
+%{_includedir}/samba-4.0/smb2.h
+%{_includedir}/samba-4.0/smb2_constants.h
+%{_includedir}/samba-4.0/smb2_create_blob.h
+%{_includedir}/samba-4.0/smb2_lease.h
+%{_includedir}/samba-4.0/smb2_lease_struct.h
+%{_includedir}/samba-4.0/smb2_signing.h
+%{_includedir}/samba-4.0/smb_cli.h
+%{_includedir}/samba-4.0/smb_cliraw.h
+%{_includedir}/samba-4.0/smb_common.h
+%{_includedir}/samba-4.0/smb_composite.h
+%{_includedir}/samba-4.0/smb_constants.h
+%{_includedir}/samba-4.0/smb_ldap.h
+%{_includedir}/samba-4.0/smb_raw.h
+%{_includedir}/samba-4.0/smb_raw_interfaces.h
+%{_includedir}/samba-4.0/smb_raw_signing.h
+%{_includedir}/samba-4.0/smb_raw_trans2.h
+%{_includedir}/samba-4.0/smb_request.h
+%{_includedir}/samba-4.0/smb_seal.h
+%{_includedir}/samba-4.0/smb_signing.h
+%{_includedir}/samba-4.0/smb_unix_ext.h
+%{_includedir}/samba-4.0/smb_util.h
+%{_includedir}/samba-4.0/smbconf.h
+%{_includedir}/samba-4.0/smbldap.h
+%{_includedir}/samba-4.0/tdr.h
+%{_includedir}/samba-4.0/torture.h
+%{_includedir}/samba-4.0/tsocket.h
+%{_includedir}/samba-4.0/tsocket_internal.h
+%{_includedir}/samba-4.0/tstream_smbXcli_np.h
+%{_includedir}/samba-4.0/util/attr.h
+%{_includedir}/samba-4.0/util/blocking.h
+%{_includedir}/samba-4.0/util/byteorder.h
+%{_includedir}/samba-4.0/util/data_blob.h
+%{_includedir}/samba-4.0/util/debug.h
+%{_includedir}/samba-4.0/util/fault.h
+%{_includedir}/samba-4.0/util/genrand.h
+%{_includedir}/samba-4.0/util/idtree.h
+%{_includedir}/samba-4.0/util/idtree_random.h
+%{_includedir}/samba-4.0/util/memory.h
+%{_includedir}/samba-4.0/util/safe_string.h
+%{_includedir}/samba-4.0/util/signal.h
+%{_includedir}/samba-4.0/util/string_wrappers.h
+%{_includedir}/samba-4.0/util/substitute.h
+%{_includedir}/samba-4.0/util/talloc_stack.h
+%{_includedir}/samba-4.0/util/tevent_ntstatus.h
+%{_includedir}/samba-4.0/util/tevent_unix.h
+%{_includedir}/samba-4.0/util/tevent_werror.h
+%{_includedir}/samba-4.0/util/time.h
+%{_includedir}/samba-4.0/util/xfile.h
+%{_includedir}/samba-4.0/util_ldb.h
+%{_includedir}/samba-4.0/wbclient.h
    
 ## devel
 %defattr(-,root,root)
-   /usr/lib64/ctdb-tests/ctdb_bench
-   /usr/lib64/ctdb-tests/ctdb_fetch
-   /usr/lib64/ctdb-tests/ctdb_fetch_one
-   /usr/lib64/ctdb-tests/ctdb_fetch_readonly_loop
-   /usr/lib64/ctdb-tests/ctdb_fetch_readonly_once
-   /usr/lib64/ctdb-tests/ctdb_functest
-   /usr/lib64/ctdb-tests/ctdb_lock_tdb
-   /usr/lib64/ctdb-tests/ctdb_persistent
-   /usr/lib64/ctdb-tests/ctdb_porting_tests
-   /usr/lib64/ctdb-tests/ctdb_randrec
-   /usr/lib64/ctdb-tests/ctdb_store
-   /usr/lib64/ctdb-tests/ctdb_stubtest
-   /usr/lib64/ctdb-tests/ctdb_takeover_tests
-   /usr/lib64/ctdb-tests/ctdb_trackingdb_test
-   /usr/lib64/ctdb-tests/ctdb_transaction
-   /usr/lib64/ctdb-tests/ctdb_traverse
-   /usr/lib64/ctdb-tests/ctdb_update_record
-   /usr/lib64/ctdb-tests/ctdb_update_record_persistent
-   /usr/lib64/ctdb-tests/rb_test
+%{_libdir}/ctdb-tests/ctdb_bench
+%{_libdir}/ctdb-tests/ctdb_fetch
+%{_libdir}/ctdb-tests/ctdb_fetch_one
+%{_libdir}/ctdb-tests/ctdb_fetch_readonly_loop
+%{_libdir}/ctdb-tests/ctdb_fetch_readonly_once
+%{_libdir}/ctdb-tests/ctdb_functest
+%{_libdir}/ctdb-tests/ctdb_lock_tdb
+%{_libdir}/ctdb-tests/ctdb_persistent
+%{_libdir}/ctdb-tests/ctdb_porting_tests
+%{_libdir}/ctdb-tests/ctdb_randrec
+%{_libdir}/ctdb-tests/ctdb_store
+%{_libdir}/ctdb-tests/ctdb_stubtest
+%{_libdir}/ctdb-tests/ctdb_takeover_tests
+%{_libdir}/ctdb-tests/ctdb_trackingdb_test
+%{_libdir}/ctdb-tests/ctdb_transaction
+%{_libdir}/ctdb-tests/ctdb_traverse
+%{_libdir}/ctdb-tests/ctdb_update_record
+%{_libdir}/ctdb-tests/ctdb_update_record_persistent
+%{_libdir}/ctdb-tests/rb_test
    
 ## krb5
 %defattr(-,root,root)
-   /usr/lib64/krb5/plugins/libkrb5/winbind_krb5_locator.so
+%{_libdir}/krb5/plugins/libkrb5/winbind_krb5_locator.so
    
 ## libs
 %defattr(-,root,root)
-   /usr/lib64/libdcerpc-atsvc.so
-   /usr/lib64/libdcerpc-atsvc.so.0
-   /usr/lib64/libdcerpc-atsvc.so.0.0.1
-   /usr/lib64/libdcerpc-binding.so
-   /usr/lib64/libdcerpc-binding.so.0
-   /usr/lib64/libdcerpc-binding.so.0.0.1
-   /usr/lib64/libdcerpc-samr.so
-   /usr/lib64/libdcerpc-samr.so.0
-   /usr/lib64/libdcerpc-samr.so.0.0.1
-   /usr/lib64/libdcerpc-server.so
-   /usr/lib64/libdcerpc-server.so.0
-   /usr/lib64/libdcerpc-server.so.0.0.1
-   /usr/lib64/libdcerpc.so
-   /usr/lib64/libdcerpc.so.0
-   /usr/lib64/libdcerpc.so.0.0.1
-   /usr/lib64/libgensec.so
-   /usr/lib64/libgensec.so.0
-   /usr/lib64/libgensec.so.0.0.1
-   /usr/lib64/libndr-krb5pac.so
-   /usr/lib64/libndr-krb5pac.so.0
-   /usr/lib64/libndr-krb5pac.so.0.0.1
-   /usr/lib64/libndr-nbt.so
-   /usr/lib64/libndr-nbt.so.0
-   /usr/lib64/libndr-nbt.so.0.0.1
-   /usr/lib64/libndr-standard.so
-   /usr/lib64/libndr-standard.so.0
-   /usr/lib64/libndr-standard.so.0.0.1
-   /usr/lib64/libndr.so
-   /usr/lib64/libndr.so.0
-   /usr/lib64/libndr.so.0.0.5
-   /usr/lib64/libnetapi.so
-   /usr/lib64/libnetapi.so.0
-   /usr/lib64/libnss_winbind.so
-   /usr/lib64/libnss_winbind.so.2
-   /usr/lib64/libnss_wins.so
-   /usr/lib64/libnss_wins.so.2
-   /usr/lib64/libregistry.so
-   /usr/lib64/libregistry.so.0
-   /usr/lib64/libregistry.so.0.0.1
-   /usr/lib64/libsamba-credentials.so
-   /usr/lib64/libsamba-credentials.so.0
-   /usr/lib64/libsamba-credentials.so.0.0.1
-   /usr/lib64/libsamba-hostconfig.so
-   /usr/lib64/libsamba-hostconfig.so.0
-   /usr/lib64/libsamba-hostconfig.so.0.0.1
-   /usr/lib64/libsamba-passdb.so
-   /usr/lib64/libsamba-passdb.so.0
-   /usr/lib64/libsamba-passdb.so.0.24.1
-   /usr/lib64/libsamba-policy.so
-   /usr/lib64/libsamba-policy.so.0
-   /usr/lib64/libsamba-policy.so.0.0.1
-   /usr/lib64/libsamba-util.so
-   /usr/lib64/libsamba-util.so.0
-   /usr/lib64/libsamba-util.so.0.0.1
-   /usr/lib64/libsamdb.so
-   /usr/lib64/libsamdb.so.0
-   /usr/lib64/libsamdb.so.0.0.1
-   /usr/lib64/libsmbclient-raw.so
-   /usr/lib64/libsmbclient-raw.so.0
-   /usr/lib64/libsmbclient-raw.so.0.0.1
-   /usr/lib64/libsmbclient.so
-   /usr/lib64/libsmbclient.so.0
-   /usr/lib64/libsmbclient.so.0.2.3
-   /usr/lib64/libsmbconf.so
-   /usr/lib64/libsmbconf.so.0
-   /usr/lib64/libsmbldap.so
-   /usr/lib64/libsmbldap.so.0
-   /usr/lib64/libtevent-util.so
-   /usr/lib64/libtevent-util.so.0
-   /usr/lib64/libtevent-util.so.0.0.1
-   /usr/lib64/libtorture.so
-   /usr/lib64/libtorture.so.0
-   /usr/lib64/libtorture.so.0.0.1
-   /usr/lib64/libwbclient.so
-   /usr/lib64/libwbclient.so.0
-   /usr/lib64/libwbclient.so.0.12
+%{_libdir}/libdcerpc-atsvc.so
+%{_libdir}/libdcerpc-atsvc.so.0
+%{_libdir}/libdcerpc-atsvc.so.0.0.1
+%{_libdir}/libdcerpc-binding.so
+%{_libdir}/libdcerpc-binding.so.0
+%{_libdir}/libdcerpc-binding.so.0.0.1
+%{_libdir}/libdcerpc-samr.so
+%{_libdir}/libdcerpc-samr.so.0
+%{_libdir}/libdcerpc-samr.so.0.0.1
+%{_libdir}/libdcerpc-server.so
+%{_libdir}/libdcerpc-server.so.0
+%{_libdir}/libdcerpc-server.so.0.0.1
+%{_libdir}/libdcerpc.so
+%{_libdir}/libdcerpc.so.0
+%{_libdir}/libdcerpc.so.0.0.1
+%{_libdir}/libgensec.so
+%{_libdir}/libgensec.so.0
+%{_libdir}/libgensec.so.0.0.1
+%{_libdir}/libndr-krb5pac.so
+%{_libdir}/libndr-krb5pac.so.0
+%{_libdir}/libndr-krb5pac.so.0.0.1
+%{_libdir}/libndr-nbt.so
+%{_libdir}/libndr-nbt.so.0
+%{_libdir}/libndr-nbt.so.0.0.1
+%{_libdir}/libndr-standard.so
+%{_libdir}/libndr-standard.so.0
+%{_libdir}/libndr-standard.so.0.0.1
+%{_libdir}/libndr.so
+%{_libdir}/libndr.so.0
+%{_libdir}/libndr.so.0.0.5
+%{_libdir}/libnetapi.so
+%{_libdir}/libnetapi.so.0
+%{_libdir}/libnss_winbind.so
+%{_libdir}/libnss_winbind.so.2
+%{_libdir}/libnss_wins.so
+%{_libdir}/libnss_wins.so.2
+%{_libdir}/libregistry.so
+%{_libdir}/libregistry.so.0
+%{_libdir}/libregistry.so.0.0.1
+%{_libdir}/libsamba-credentials.so
+%{_libdir}/libsamba-credentials.so.0
+%{_libdir}/libsamba-credentials.so.0.0.1
+%{_libdir}/libsamba-hostconfig.so
+%{_libdir}/libsamba-hostconfig.so.0
+%{_libdir}/libsamba-hostconfig.so.0.0.1
+%{_libdir}/libsamba-passdb.so
+%{_libdir}/libsamba-passdb.so.0
+%{_libdir}/libsamba-passdb.so.0.24.1
+%{_libdir}/libsamba-policy.so
+%{_libdir}/libsamba-policy.so.0
+%{_libdir}/libsamba-policy.so.0.0.1
+%{_libdir}/libsamba-util.so
+%{_libdir}/libsamba-util.so.0
+%{_libdir}/libsamba-util.so.0.0.1
+%{_libdir}/libsamdb.so
+%{_libdir}/libsamdb.so.0
+%{_libdir}/libsamdb.so.0.0.1
+%{_libdir}/libsmbclient-raw.so
+%{_libdir}/libsmbclient-raw.so.0
+%{_libdir}/libsmbclient-raw.so.0.0.1
+%{_libdir}/libsmbclient.so
+%{_libdir}/libsmbclient.so.0
+%{_libdir}/libsmbclient.so.0.2.3
+%{_libdir}/libsmbconf.so
+%{_libdir}/libsmbconf.so.0
+%{_libdir}/libsmbldap.so
+%{_libdir}/libsmbldap.so.0
+%{_libdir}/libtevent-util.so
+%{_libdir}/libtevent-util.so.0
+%{_libdir}/libtevent-util.so.0.0.1
+%{_libdir}/libtorture.so
+%{_libdir}/libtorture.so.0
+%{_libdir}/libtorture.so.0.0.1
+%{_libdir}/libwbclient.so
+%{_libdir}/libwbclient.so.0
+%{_libdir}/libwbclient.so.0.12
 
 ## pkgconfig
 %defattr(-,root,root)
-   /usr/lib64/pkgconfig/ctdb.pc
-   /usr/lib64/pkgconfig/dcerpc.pc
-   /usr/lib64/pkgconfig/dcerpc_atsvc.pc
-   /usr/lib64/pkgconfig/dcerpc_samr.pc
-   /usr/lib64/pkgconfig/dcerpc_server.pc
-   /usr/lib64/pkgconfig/gensec.pc
-   /usr/lib64/pkgconfig/ndr.pc
-   /usr/lib64/pkgconfig/ndr_krb5pac.pc
-   /usr/lib64/pkgconfig/ndr_nbt.pc
-   /usr/lib64/pkgconfig/ndr_standard.pc
-   /usr/lib64/pkgconfig/netapi.pc
-   /usr/lib64/pkgconfig/registry.pc
-   /usr/lib64/pkgconfig/samba-credentials.pc
-   /usr/lib64/pkgconfig/samba-hostconfig.pc
-   /usr/lib64/pkgconfig/samba-policy.pc
-   /usr/lib64/pkgconfig/samba-util.pc
-   /usr/lib64/pkgconfig/samdb.pc
-   /usr/lib64/pkgconfig/smbclient-raw.pc
-   /usr/lib64/pkgconfig/smbclient.pc
-   /usr/lib64/pkgconfig/torture.pc
-   /usr/lib64/pkgconfig/wbclient.pc
+%{_libdir}/pkgconfig/ctdb.pc
+%{_libdir}/pkgconfig/dcerpc.pc
+%{_libdir}/pkgconfig/dcerpc_atsvc.pc
+%{_libdir}/pkgconfig/dcerpc_samr.pc
+%{_libdir}/pkgconfig/dcerpc_server.pc
+%{_libdir}/pkgconfig/gensec.pc
+%{_libdir}/pkgconfig/ndr.pc
+%{_libdir}/pkgconfig/ndr_krb5pac.pc
+%{_libdir}/pkgconfig/ndr_nbt.pc
+%{_libdir}/pkgconfig/ndr_standard.pc
+%{_libdir}/pkgconfig/netapi.pc
+%{_libdir}/pkgconfig/registry.pc
+%{_libdir}/pkgconfig/samba-credentials.pc
+%{_libdir}/pkgconfig/samba-hostconfig.pc
+%{_libdir}/pkgconfig/samba-policy.pc
+%{_libdir}/pkgconfig/samba-util.pc
+%{_libdir}/pkgconfig/samdb.pc
+%{_libdir}/pkgconfig/smbclient-raw.pc
+%{_libdir}/pkgconfig/smbclient.pc
+%{_libdir}/pkgconfig/torture.pc
+%{_libdir}/pkgconfig/wbclient.pc
    
 ## samba auth
 %defattr(-,root,root)
-   /usr/lib64/samba/auth/script.so
+%{_libdir}/samba/auth/script.so
 
 ## samba bind9
 %defattr(-,root,root)   
-   /usr/lib64/samba/bind9/dlz_bind9.so
-   /usr/lib64/samba/bind9/dlz_bind9_10.so
-   /usr/lib64/samba/bind9/dlz_bind9_9.so
+%{_libdir}/samba/bind9/dlz_bind9.so
+%{_libdir}/samba/bind9/dlz_bind9_10.so
+%{_libdir}/samba/bind9/dlz_bind9_9.so
 
 ## samba gensec
 %defattr(-,root,root)
-   /usr/lib64/samba/gensec/krb5.so
+%{_libdir}/samba/gensec/krb5.so
    
 ## samba idmap
 %defattr(-,root,root)
-   /usr/lib64/samba/idmap/ad.so
-   /usr/lib64/samba/idmap/autorid.so
-   /usr/lib64/samba/idmap/hash.so
-   /usr/lib64/samba/idmap/rfc2307.so
-   /usr/lib64/samba/idmap/rid.so
-   /usr/lib64/samba/idmap/script.so
-   /usr/lib64/samba/idmap/tdb2.so
+%{_libdir}/samba/idmap/ad.so
+%{_libdir}/samba/idmap/autorid.so
+%{_libdir}/samba/idmap/hash.so
+%{_libdir}/samba/idmap/rfc2307.so
+%{_libdir}/samba/idmap/rid.so
+%{_libdir}/samba/idmap/script.so
+%{_libdir}/samba/idmap/tdb2.so
    
 ## samba common
-   /usr/lib64/samba/libCHARSET3-samba4.so
-   /usr/lib64/samba/libHDB-SAMBA4-samba4.so
-   /usr/lib64/samba/libLIBWBCLIENT-OLD-samba4.so
-   /usr/lib64/samba/libMESSAGING-samba4.so
-   /usr/lib64/samba/libaddns-samba4.so
-   /usr/lib64/samba/libads-samba4.so
-   /usr/lib64/samba/libasn1-samba4.so.8
-   /usr/lib64/samba/libasn1-samba4.so.8.0.0
-   /usr/lib64/samba/libasn1util-samba4.so
-   /usr/lib64/samba/libauth-sam-reply-samba4.so
-   /usr/lib64/samba/libauth-samba4.so
-   /usr/lib64/samba/libauth-unix-token-samba4.so
-   /usr/lib64/samba/libauth4-samba4.so
-   /usr/lib64/samba/libauthkrb5-samba4.so
-   /usr/lib64/samba/libcli-cldap-samba4.so
-   /usr/lib64/samba/libcli-ldap-common-samba4.so
-   /usr/lib64/samba/libcli-ldap-samba4.so
-   /usr/lib64/samba/libcli-nbt-samba4.so
-   /usr/lib64/samba/libcli-smb-common-samba4.so
-   /usr/lib64/samba/libcli-spoolss-samba4.so
-   /usr/lib64/samba/libcliauth-samba4.so
-   /usr/lib64/samba/libcluster-samba4.so
-   /usr/lib64/samba/libcmdline-credentials-samba4.so
-   /usr/lib64/samba/libcom_err-samba4.so.0
-   /usr/lib64/samba/libcom_err-samba4.so.0.25
-   /usr/lib64/samba/libdb-glue-samba4.so
-   /usr/lib64/samba/libdbwrap-samba4.so
-   /usr/lib64/samba/libdcerpc-samba-samba4.so
-   /usr/lib64/samba/libdcerpc-samba4.so
-   /usr/lib64/samba/libdfs-server-ad-samba4.so
-   /usr/lib64/samba/libdlz-bind9-for-torture-samba4.so
-   /usr/lib64/samba/libdnsserver-common-samba4.so
-   /usr/lib64/samba/libdsdb-module-samba4.so
-   /usr/lib64/samba/liberrors-samba4.so
-   /usr/lib64/samba/libevents-samba4.so
-   /usr/lib64/samba/libflag-mapping-samba4.so
-   /usr/lib64/samba/libgenrand-samba4.so
-   /usr/lib64/samba/libgpo-samba4.so
-   /usr/lib64/samba/libgse-samba4.so
-   /usr/lib64/samba/libgssapi-samba4.so.2
-   /usr/lib64/samba/libgssapi-samba4.so.2.0.0
-   /usr/lib64/samba/libhcrypto-samba4.so.5
-   /usr/lib64/samba/libhcrypto-samba4.so.5.0.1
-   /usr/lib64/samba/libhdb-samba4.so.11
-   /usr/lib64/samba/libhdb-samba4.so.11.0.2
-   /usr/lib64/samba/libheimbase-samba4.so.1
-   /usr/lib64/samba/libheimbase-samba4.so.1.0.0
-   /usr/lib64/samba/libheimntlm-samba4.so.1
-   /usr/lib64/samba/libheimntlm-samba4.so.1.0.1
-   /usr/lib64/samba/libhttp-samba4.so
-   /usr/lib64/samba/libhx509-samba4.so.5
-   /usr/lib64/samba/libhx509-samba4.so.5.0.0
-   /usr/lib64/samba/libidmap-samba4.so
-   /usr/lib64/samba/libinterfaces-samba4.so
-   /usr/lib64/samba/libiov-buf-samba4.so
-   /usr/lib64/samba/libkdc-samba4.so.2
-   /usr/lib64/samba/libkdc-samba4.so.2.0.0
-   /usr/lib64/samba/libkrb5-samba4.so.26
-   /usr/lib64/samba/libkrb5-samba4.so.26.0.0
-   /usr/lib64/samba/libkrb5samba-samba4.so
-   /usr/lib64/samba/libldb-cmdline-samba4.so
-   /usr/lib64/samba/libldb.so.1
-   /usr/lib64/samba/libldb.so.1.1.21
-   /usr/lib64/samba/libldbsamba-samba4.so
-   /usr/lib64/samba/liblibcli-lsa3-samba4.so
-   /usr/lib64/samba/liblibcli-netlogon3-samba4.so
-   /usr/lib64/samba/liblibsmb-samba4.so
-   /usr/lib64/samba/libmessages-dgm-samba4.so
-   /usr/lib64/samba/libmessages-util-samba4.so
-   /usr/lib64/samba/libmsghdr-samba4.so
-   /usr/lib64/samba/libmsrpc3-samba4.so
-   /usr/lib64/samba/libndr-samba-samba4.so
-   /usr/lib64/samba/libndr-samba4.so
-   /usr/lib64/samba/libnet-keytab-samba4.so
-   /usr/lib64/samba/libnetif-samba4.so
-   /usr/lib64/samba/libnon-posix-acls-samba4.so
-   /usr/lib64/samba/libnpa-tstream-samba4.so
-   /usr/lib64/samba/libnss-info-samba4.so
-   /usr/lib64/samba/libntvfs-samba4.so
-   /usr/lib64/samba/libpac-samba4.so
-   /usr/lib64/samba/libpopt-samba3-samba4.so
-   /usr/lib64/samba/libpopt-samba4.so
-   /usr/lib64/samba/libposix-eadb-samba4.so
-   /usr/lib64/samba/libprinting-migrate-samba4.so
-   /usr/lib64/samba/libprocess-model-samba4.so
-   /usr/lib64/samba/libpyldb-util.so.1
-   /usr/lib64/samba/libpyldb-util.so.1.1.21
-   /usr/lib64/samba/libpytalloc-util.so.2
-   /usr/lib64/samba/libpytalloc-util.so.2.1.3
-   /usr/lib64/samba/libreplace-samba4.so
-   /usr/lib64/samba/libroken-samba4.so.19
-   /usr/lib64/samba/libroken-samba4.so.19.0.1
-   /usr/lib64/samba/libsamba-cluster-support-samba4.so
-   /usr/lib64/samba/libsamba-debug-samba4.so
-   /usr/lib64/samba/libsamba-modules-samba4.so
-   /usr/lib64/samba/libsamba-net-samba4.so
-   /usr/lib64/samba/libsamba-python-samba4.so
-   /usr/lib64/samba/libsamba-security-samba4.so
-   /usr/lib64/samba/libsamba-sockets-samba4.so
-   /usr/lib64/samba/libsamba3-util-samba4.so
-   /usr/lib64/samba/libsamdb-common-samba4.so
-   /usr/lib64/samba/libsecrets3-samba4.so
-   /usr/lib64/samba/libserver-id-db-samba4.so
-   /usr/lib64/samba/libserver-role-samba4.so
-   /usr/lib64/samba/libservice-samba4.so
-   /usr/lib64/samba/libshares-samba4.so
-   /usr/lib64/samba/libsmb-transport-samba4.so
-   /usr/lib64/samba/libsmbd-base-samba4.so
-   /usr/lib64/samba/libsmbd-conn-samba4.so
-   /usr/lib64/samba/libsmbd-shim-samba4.so
-   /usr/lib64/samba/libsmbldaphelper-samba4.so
-   /usr/lib64/samba/libsmbpasswdparser-samba4.so
-   /usr/lib64/samba/libsmbregistry-samba4.so
-   /usr/lib64/samba/libsocket-blocking-samba4.so
-   /usr/lib64/samba/libsys-rw-samba4.so
-   /usr/lib64/samba/libtalloc-report-samba4.so
-   /usr/lib64/samba/libtalloc.so.2
-   /usr/lib64/samba/libtalloc.so.2.1.3
-   /usr/lib64/samba/libtdb-wrap-samba4.so
-   /usr/lib64/samba/libtdb.so.1
-   /usr/lib64/samba/libtdb.so.1.3.7
-   /usr/lib64/samba/libtevent.so.0
-   /usr/lib64/samba/libtevent.so.0.9.25
-   /usr/lib64/samba/libtime-basic-samba4.so
-   /usr/lib64/samba/libtrusts-util-samba4.so
-   /usr/lib64/samba/libutil-cmdline-samba4.so
-   /usr/lib64/samba/libutil-reg-samba4.so
-   /usr/lib64/samba/libutil-setid-samba4.so
-   /usr/lib64/samba/libutil-tdb-samba4.so
-   /usr/lib64/samba/libwinbind-client-samba4.so
-   /usr/lib64/samba/libwind-samba4.so.0
-   /usr/lib64/samba/libwind-samba4.so.0.0.0
-   /usr/lib64/samba/libxattr-tdb-samba4.so
-   /usr/lib64/samba/libz-samba4.so
+%{_libdir}/samba/libCHARSET3-samba4.so
+%{_libdir}/samba/libHDB-SAMBA4-samba4.so
+%{_libdir}/samba/libLIBWBCLIENT-OLD-samba4.so
+%{_libdir}/samba/libMESSAGING-samba4.so
+%{_libdir}/samba/libaddns-samba4.so
+%{_libdir}/samba/libads-samba4.so
+%{_libdir}/samba/libasn1-samba4.so.8
+%{_libdir}/samba/libasn1-samba4.so.8.0.0
+%{_libdir}/samba/libasn1util-samba4.so
+%{_libdir}/samba/libauth-sam-reply-samba4.so
+%{_libdir}/samba/libauth-samba4.so
+%{_libdir}/samba/libauth-unix-token-samba4.so
+%{_libdir}/samba/libauth4-samba4.so
+%{_libdir}/samba/libauthkrb5-samba4.so
+%{_libdir}/samba/libcli-cldap-samba4.so
+%{_libdir}/samba/libcli-ldap-common-samba4.so
+%{_libdir}/samba/libcli-ldap-samba4.so
+%{_libdir}/samba/libcli-nbt-samba4.so
+%{_libdir}/samba/libcli-smb-common-samba4.so
+%{_libdir}/samba/libcli-spoolss-samba4.so
+%{_libdir}/samba/libcliauth-samba4.so
+%{_libdir}/samba/libcluster-samba4.so
+%{_libdir}/samba/libcmdline-credentials-samba4.so
+%{_libdir}/samba/libcom_err-samba4.so.0
+%{_libdir}/samba/libcom_err-samba4.so.0.25
+%{_libdir}/samba/libdb-glue-samba4.so
+%{_libdir}/samba/libdbwrap-samba4.so
+%{_libdir}/samba/libdcerpc-samba-samba4.so
+%{_libdir}/samba/libdcerpc-samba4.so
+%{_libdir}/samba/libdfs-server-ad-samba4.so
+%{_libdir}/samba/libdlz-bind9-for-torture-samba4.so
+%{_libdir}/samba/libdnsserver-common-samba4.so
+%{_libdir}/samba/libdsdb-module-samba4.so
+%{_libdir}/samba/liberrors-samba4.so
+%{_libdir}/samba/libevents-samba4.so
+%{_libdir}/samba/libflag-mapping-samba4.so
+%{_libdir}/samba/libgenrand-samba4.so
+%{_libdir}/samba/libgpo-samba4.so
+%{_libdir}/samba/libgse-samba4.so
+%{_libdir}/samba/libgssapi-samba4.so.2
+%{_libdir}/samba/libgssapi-samba4.so.2.0.0
+%{_libdir}/samba/libhcrypto-samba4.so.5
+%{_libdir}/samba/libhcrypto-samba4.so.5.0.1
+%{_libdir}/samba/libhdb-samba4.so.11
+%{_libdir}/samba/libhdb-samba4.so.11.0.2
+%{_libdir}/samba/libheimbase-samba4.so.1
+%{_libdir}/samba/libheimbase-samba4.so.1.0.0
+%{_libdir}/samba/libheimntlm-samba4.so.1
+%{_libdir}/samba/libheimntlm-samba4.so.1.0.1
+%{_libdir}/samba/libhttp-samba4.so
+%{_libdir}/samba/libhx509-samba4.so.5
+%{_libdir}/samba/libhx509-samba4.so.5.0.0
+%{_libdir}/samba/libidmap-samba4.so
+%{_libdir}/samba/libinterfaces-samba4.so
+%{_libdir}/samba/libiov-buf-samba4.so
+%{_libdir}/samba/libkdc-samba4.so.2
+%{_libdir}/samba/libkdc-samba4.so.2.0.0
+%{_libdir}/samba/libkrb5-samba4.so.26
+%{_libdir}/samba/libkrb5-samba4.so.26.0.0
+%{_libdir}/samba/libkrb5samba-samba4.so
+%{_libdir}/samba/libldb-cmdline-samba4.so
+%{_libdir}/samba/libldb.so.1
+%{_libdir}/samba/libldb.so.1.1.21
+%{_libdir}/samba/libldbsamba-samba4.so
+%{_libdir}/samba/liblibcli-lsa3-samba4.so
+%{_libdir}/samba/liblibcli-netlogon3-samba4.so
+%{_libdir}/samba/liblibsmb-samba4.so
+%{_libdir}/samba/libmessages-dgm-samba4.so
+%{_libdir}/samba/libmessages-util-samba4.so
+%{_libdir}/samba/libmsghdr-samba4.so
+%{_libdir}/samba/libmsrpc3-samba4.so
+%{_libdir}/samba/libndr-samba-samba4.so
+%{_libdir}/samba/libndr-samba4.so
+%{_libdir}/samba/libnet-keytab-samba4.so
+%{_libdir}/samba/libnetif-samba4.so
+%{_libdir}/samba/libnon-posix-acls-samba4.so
+%{_libdir}/samba/libnpa-tstream-samba4.so
+%{_libdir}/samba/libnss-info-samba4.so
+%{_libdir}/samba/libntvfs-samba4.so
+%{_libdir}/samba/libpac-samba4.so
+%{_libdir}/samba/libpopt-samba3-samba4.so
+%{_libdir}/samba/libpopt-samba4.so
+%{_libdir}/samba/libposix-eadb-samba4.so
+%{_libdir}/samba/libprinting-migrate-samba4.so
+%{_libdir}/samba/libprocess-model-samba4.so
+%{_libdir}/samba/libpyldb-util.so.1
+%{_libdir}/samba/libpyldb-util.so.1.1.21
+%{_libdir}/samba/libpytalloc-util.so.2
+%{_libdir}/samba/libpytalloc-util.so.2.1.3
+%{_libdir}/samba/libreplace-samba4.so
+%{_libdir}/samba/libroken-samba4.so.19
+%{_libdir}/samba/libroken-samba4.so.19.0.1
+%{_libdir}/samba/libsamba-cluster-support-samba4.so
+%{_libdir}/samba/libsamba-debug-samba4.so
+%{_libdir}/samba/libsamba-modules-samba4.so
+%{_libdir}/samba/libsamba-net-samba4.so
+%{_libdir}/samba/libsamba-python-samba4.so
+%{_libdir}/samba/libsamba-security-samba4.so
+%{_libdir}/samba/libsamba-sockets-samba4.so
+%{_libdir}/samba/libsamba3-util-samba4.so
+%{_libdir}/samba/libsamdb-common-samba4.so
+%{_libdir}/samba/libsecrets3-samba4.so
+%{_libdir}/samba/libserver-id-db-samba4.so
+%{_libdir}/samba/libserver-role-samba4.so
+%{_libdir}/samba/libservice-samba4.so
+%{_libdir}/samba/libshares-samba4.so
+%{_libdir}/samba/libsmb-transport-samba4.so
+%{_libdir}/samba/libsmbd-base-samba4.so
+%{_libdir}/samba/libsmbd-conn-samba4.so
+%{_libdir}/samba/libsmbd-shim-samba4.so
+%{_libdir}/samba/libsmbldaphelper-samba4.so
+%{_libdir}/samba/libsmbpasswdparser-samba4.so
+%{_libdir}/samba/libsmbregistry-samba4.so
+%{_libdir}/samba/libsocket-blocking-samba4.so
+%{_libdir}/samba/libsys-rw-samba4.so
+%{_libdir}/samba/libtalloc-report-samba4.so
+%{_libdir}/samba/libtalloc.so.2
+%{_libdir}/samba/libtalloc.so.2.1.3
+%{_libdir}/samba/libtdb-wrap-samba4.so
+%{_libdir}/samba/libtdb.so.1
+%{_libdir}/samba/libtdb.so.1.3.7
+%{_libdir}/samba/libtevent.so.0
+%{_libdir}/samba/libtevent.so.0.9.25
+%{_libdir}/samba/libtime-basic-samba4.so
+%{_libdir}/samba/libtrusts-util-samba4.so
+%{_libdir}/samba/libutil-cmdline-samba4.so
+%{_libdir}/samba/libutil-reg-samba4.so
+%{_libdir}/samba/libutil-setid-samba4.so
+%{_libdir}/samba/libutil-tdb-samba4.so
+%{_libdir}/samba/libwinbind-client-samba4.so
+%{_libdir}/samba/libwind-samba4.so.0
+%{_libdir}/samba/libwind-samba4.so.0.0.0
+%{_libdir}/samba/libxattr-tdb-samba4.so
+%{_libdir}/samba/libz-samba4.so
    
 ## samba ldb
 %defattr(-,root,root)
-   /usr/lib64/samba/ldb/acl.so
-   /usr/lib64/samba/ldb/aclread.so
-   /usr/lib64/samba/ldb/anr.so
-   /usr/lib64/samba/ldb/asq.so
-   /usr/lib64/samba/ldb/descriptor.so
-   /usr/lib64/samba/ldb/dirsync.so
-   /usr/lib64/samba/ldb/dns_notify.so
-   /usr/lib64/samba/ldb/extended_dn_in.so
-   /usr/lib64/samba/ldb/extended_dn_out.so
-   /usr/lib64/samba/ldb/extended_dn_store.so
-   /usr/lib64/samba/ldb/ildap.so
-   /usr/lib64/samba/ldb/instancetype.so
-   /usr/lib64/samba/ldb/lazy_commit.so
-   /usr/lib64/samba/ldb/ldbsamba_extensions.so
-   /usr/lib64/samba/ldb/linked_attributes.so
-   /usr/lib64/samba/ldb/local_password.so
-   /usr/lib64/samba/ldb/new_partition.so
-   /usr/lib64/samba/ldb/objectclass.so
-   /usr/lib64/samba/ldb/objectclass_attrs.so
-   /usr/lib64/samba/ldb/objectguid.so
-   /usr/lib64/samba/ldb/operational.so
-   /usr/lib64/samba/ldb/paged_results.so
-   /usr/lib64/samba/ldb/paged_searches.so
-   /usr/lib64/samba/ldb/partition.so
-   /usr/lib64/samba/ldb/password_hash.so
-   /usr/lib64/samba/ldb/ranged_results.so
-   /usr/lib64/samba/ldb/rdn_name.so
-   /usr/lib64/samba/ldb/repl_meta_data.so
-   /usr/lib64/samba/ldb/resolve_oids.so
-   /usr/lib64/samba/ldb/rootdse.so
-   /usr/lib64/samba/ldb/samba3sam.so
-   /usr/lib64/samba/ldb/samba3sid.so
-   /usr/lib64/samba/ldb/samba_dsdb.so
-   /usr/lib64/samba/ldb/samba_secrets.so
-   /usr/lib64/samba/ldb/samldb.so
-   /usr/lib64/samba/ldb/sample.so
-   /usr/lib64/samba/ldb/schema_data.so
-   /usr/lib64/samba/ldb/schema_load.so
-   /usr/lib64/samba/ldb/secrets_tdb_sync.so
-   /usr/lib64/samba/ldb/server_sort.so
-   /usr/lib64/samba/ldb/show_deleted.so
-   /usr/lib64/samba/ldb/simple_dn.so
-   /usr/lib64/samba/ldb/simple_ldap_map.so
-   /usr/lib64/samba/ldb/skel.so
-   /usr/lib64/samba/ldb/subtree_delete.so
-   /usr/lib64/samba/ldb/subtree_rename.so
-   /usr/lib64/samba/ldb/tdb.so
-   /usr/lib64/samba/ldb/tombstone_reanimate.so
-   /usr/lib64/samba/ldb/update_keytab.so
-   /usr/lib64/samba/ldb/wins_ldb.so
+%{_libdir}/samba/ldb/acl.so
+%{_libdir}/samba/ldb/aclread.so
+%{_libdir}/samba/ldb/anr.so
+%{_libdir}/samba/ldb/asq.so
+%{_libdir}/samba/ldb/descriptor.so
+%{_libdir}/samba/ldb/dirsync.so
+%{_libdir}/samba/ldb/dns_notify.so
+%{_libdir}/samba/ldb/extended_dn_in.so
+%{_libdir}/samba/ldb/extended_dn_out.so
+%{_libdir}/samba/ldb/extended_dn_store.so
+%{_libdir}/samba/ldb/ildap.so
+%{_libdir}/samba/ldb/instancetype.so
+%{_libdir}/samba/ldb/lazy_commit.so
+%{_libdir}/samba/ldb/ldbsamba_extensions.so
+%{_libdir}/samba/ldb/linked_attributes.so
+%{_libdir}/samba/ldb/local_password.so
+%{_libdir}/samba/ldb/new_partition.so
+%{_libdir}/samba/ldb/objectclass.so
+%{_libdir}/samba/ldb/objectclass_attrs.so
+%{_libdir}/samba/ldb/objectguid.so
+%{_libdir}/samba/ldb/operational.so
+%{_libdir}/samba/ldb/paged_results.so
+%{_libdir}/samba/ldb/paged_searches.so
+%{_libdir}/samba/ldb/partition.so
+%{_libdir}/samba/ldb/password_hash.so
+%{_libdir}/samba/ldb/ranged_results.so
+%{_libdir}/samba/ldb/rdn_name.so
+%{_libdir}/samba/ldb/repl_meta_data.so
+%{_libdir}/samba/ldb/resolve_oids.so
+%{_libdir}/samba/ldb/rootdse.so
+%{_libdir}/samba/ldb/samba3sam.so
+%{_libdir}/samba/ldb/samba3sid.so
+%{_libdir}/samba/ldb/samba_dsdb.so
+%{_libdir}/samba/ldb/samba_secrets.so
+%{_libdir}/samba/ldb/samldb.so
+%{_libdir}/samba/ldb/sample.so
+%{_libdir}/samba/ldb/schema_data.so
+%{_libdir}/samba/ldb/schema_load.so
+%{_libdir}/samba/ldb/secrets_tdb_sync.so
+%{_libdir}/samba/ldb/server_sort.so
+%{_libdir}/samba/ldb/show_deleted.so
+%{_libdir}/samba/ldb/simple_dn.so
+%{_libdir}/samba/ldb/simple_ldap_map.so
+%{_libdir}/samba/ldb/skel.so
+%{_libdir}/samba/ldb/subtree_delete.so
+%{_libdir}/samba/ldb/subtree_rename.so
+%{_libdir}/samba/ldb/tdb.so
+%{_libdir}/samba/ldb/tombstone_reanimate.so
+%{_libdir}/samba/ldb/update_keytab.so
+%{_libdir}/samba/ldb/wins_ldb.so
    
 ## samba nss_info
 %defattr(-,root,root)
-   /usr/lib64/samba/nss_info/hash.so
-   /usr/lib64/samba/nss_info/rfc2307.so
-   /usr/lib64/samba/nss_info/sfu.so
-   /usr/lib64/samba/nss_info/sfu20.so
+%{_libdir}/samba/nss_info/hash.so
+%{_libdir}/samba/nss_info/rfc2307.so
+%{_libdir}/samba/nss_info/sfu.so
+%{_libdir}/samba/nss_info/sfu20.so
    
 ## samba process_model
 %defattr(-,root,root)
-   /usr/lib64/samba/process_model/standard.so
+%{_libdir}/samba/process_model/standard.so
    
 ## samba service
 %defattr(-,root,root)
-   /usr/lib64/samba/service/cldap.so
-   /usr/lib64/samba/service/dcerpc.so
-   /usr/lib64/samba/service/dns.so
-   /usr/lib64/samba/service/dns_update.so
-   /usr/lib64/samba/service/drepl.so
-   /usr/lib64/samba/service/kcc.so
-   /usr/lib64/samba/service/kdc.so
-   /usr/lib64/samba/service/ldap.so
-   /usr/lib64/samba/service/nbtd.so
-   /usr/lib64/samba/service/ntp_signd.so
-   /usr/lib64/samba/service/s3fs.so
-   /usr/lib64/samba/service/smb.so
-   /usr/lib64/samba/service/web.so
-   /usr/lib64/samba/service/winbindd.so
-   /usr/lib64/samba/service/wrepl.so
+%{_libdir}/samba/service/cldap.so
+%{_libdir}/samba/service/dcerpc.so
+%{_libdir}/samba/service/dns.so
+%{_libdir}/samba/service/dns_update.so
+%{_libdir}/samba/service/drepl.so
+%{_libdir}/samba/service/kcc.so
+%{_libdir}/samba/service/kdc.so
+%{_libdir}/samba/service/ldap.so
+%{_libdir}/samba/service/nbtd.so
+%{_libdir}/samba/service/ntp_signd.so
+%{_libdir}/samba/service/s3fs.so
+%{_libdir}/samba/service/smb.so
+%{_libdir}/samba/service/web.so
+%{_libdir}/samba/service/winbindd.so
+%{_libdir}/samba/service/wrepl.so
    
 ## samba vfs
 %defattr(-,root,root)  
-   /usr/lib64/samba/vfs/acl_tdb.so
-   /usr/lib64/samba/vfs/acl_xattr.so
-   /usr/lib64/samba/vfs/aio_fork.so
-   /usr/lib64/samba/vfs/aio_linux.so
-   /usr/lib64/samba/vfs/aio_posix.so
-   /usr/lib64/samba/vfs/aio_pthread.so
-   /usr/lib64/samba/vfs/audit.so
-   /usr/lib64/samba/vfs/btrfs.so
-   /usr/lib64/samba/vfs/cap.so
-   /usr/lib64/samba/vfs/catia.so
-   /usr/lib64/samba/vfs/commit.so
-   /usr/lib64/samba/vfs/crossrename.so
-   /usr/lib64/samba/vfs/default_quota.so
-   /usr/lib64/samba/vfs/dirsort.so
-   /usr/lib64/samba/vfs/expand_msdfs.so
-   /usr/lib64/samba/vfs/extd_audit.so
-   /usr/lib64/samba/vfs/fake_perms.so
-   /usr/lib64/samba/vfs/fileid.so
-   /usr/lib64/samba/vfs/fruit.so
-   /usr/lib64/samba/vfs/full_audit.so
-   /usr/lib64/samba/vfs/glusterfs.so
-   /usr/lib64/samba/vfs/linux_xfs_sgid.so
-   /usr/lib64/samba/vfs/media_harmony.so
-   /usr/lib64/samba/vfs/netatalk.so
-   /usr/lib64/samba/vfs/posix_eadb.so
-   /usr/lib64/samba/vfs/preopen.so
-   /usr/lib64/samba/vfs/readahead.so
-   /usr/lib64/samba/vfs/readonly.so
-   /usr/lib64/samba/vfs/recycle.so
-   /usr/lib64/samba/vfs/scannedonly.so
-   /usr/lib64/samba/vfs/shadow_copy.so
-   /usr/lib64/samba/vfs/shadow_copy2.so
-   /usr/lib64/samba/vfs/shell_snap.so
-   /usr/lib64/samba/vfs/smb_traffic_analyzer.so
-   /usr/lib64/samba/vfs/snapper.so
-   /usr/lib64/samba/vfs/streams_depot.so
-   /usr/lib64/samba/vfs/streams_xattr.so
-   /usr/lib64/samba/vfs/syncops.so
-   /usr/lib64/samba/vfs/time_audit.so
-   /usr/lib64/samba/vfs/unityed_media.so
-   /usr/lib64/samba/vfs/worm.so
-   /usr/lib64/samba/vfs/xattr_tdb.so
+%{_libdir}/samba/vfs/acl_tdb.so
+%{_libdir}/samba/vfs/acl_xattr.so
+%{_libdir}/samba/vfs/aio_fork.so
+%{_libdir}/samba/vfs/aio_linux.so
+%{_libdir}/samba/vfs/aio_posix.so
+%{_libdir}/samba/vfs/aio_pthread.so
+%{_libdir}/samba/vfs/audit.so
+%{_libdir}/samba/vfs/btrfs.so
+%{_libdir}/samba/vfs/cap.so
+%{_libdir}/samba/vfs/catia.so
+%{_libdir}/samba/vfs/commit.so
+%{_libdir}/samba/vfs/crossrename.so
+%{_libdir}/samba/vfs/default_quota.so
+%{_libdir}/samba/vfs/dirsort.so
+%{_libdir}/samba/vfs/expand_msdfs.so
+%{_libdir}/samba/vfs/extd_audit.so
+%{_libdir}/samba/vfs/fake_perms.so
+%{_libdir}/samba/vfs/fileid.so
+%{_libdir}/samba/vfs/fruit.so
+%{_libdir}/samba/vfs/full_audit.so
+%{_libdir}/samba/vfs/glusterfs.so
+%{_libdir}/samba/vfs/linux_xfs_sgid.so
+%{_libdir}/samba/vfs/media_harmony.so
+%{_libdir}/samba/vfs/netatalk.so
+%{_libdir}/samba/vfs/posix_eadb.so
+%{_libdir}/samba/vfs/preopen.so
+%{_libdir}/samba/vfs/readahead.so
+%{_libdir}/samba/vfs/readonly.so
+%{_libdir}/samba/vfs/recycle.so
+%{_libdir}/samba/vfs/scannedonly.so
+%{_libdir}/samba/vfs/shadow_copy.so
+%{_libdir}/samba/vfs/shadow_copy2.so
+%{_libdir}/samba/vfs/shell_snap.so
+%{_libdir}/samba/vfs/smb_traffic_analyzer.so
+%{_libdir}/samba/vfs/snapper.so
+%{_libdir}/samba/vfs/streams_depot.so
+%{_libdir}/samba/vfs/streams_xattr.so
+%{_libdir}/samba/vfs/syncops.so
+%{_libdir}/samba/vfs/time_audit.so
+%{_libdir}/samba/vfs/unityed_media.so
+%{_libdir}/samba/vfs/worm.so
+%{_libdir}/samba/vfs/xattr_tdb.so
    
 ## samba security
 %defattr(-,root,root)     
-   /usr/lib64/security/pam_winbind.so
-   /usr/lib64/security/pam_smbpass.so
+%{_libdir}/security/pam_winbind.so
+%{_libdir}/security/pam_smbpass.so
    
 ## samba winbind_krb5
 %defattr(-,root,root)        
-   /usr/lib64/winbind_krb5_locator.so   
+%{_libdir}/winbind_krb5_locator.so   
 
 ## samba ctdb-tests
 %defattr(-,root,root)   
-   /usr/share/ctdb-tests/eventscripts/etc-ctdb/events.d
-   /usr/share/ctdb-tests/eventscripts/etc-ctdb/functions
-   /usr/share/ctdb-tests/eventscripts/etc-ctdb/nfs-checks.d
-   /usr/share/ctdb-tests/eventscripts/etc-ctdb/nfs-linux-kernel-callout
-   /usr/share/ctdb-tests/eventscripts/etc-ctdb/statd-callout
-   /usr/share/ctdb-tests/scripts/common.sh
-   /usr/share/ctdb-tests/scripts/integration.bash
-   /usr/share/ctdb-tests/scripts/test_wrap
-   /usr/share/ctdb-tests/scripts/unit.sh
+%{_datadir}/ctdb-tests/eventscripts/etc-ctdb/events.d
+%{_datadir}/ctdb-tests/eventscripts/etc-ctdb/functions
+%{_datadir}/ctdb-tests/eventscripts/etc-ctdb/nfs-checks.d
+%{_datadir}/ctdb-tests/eventscripts/etc-ctdb/nfs-linux-kernel-callout
+%{_datadir}/ctdb-tests/eventscripts/etc-ctdb/statd-callout
+%{_datadir}/ctdb-tests/scripts/common.sh
+%{_datadir}/ctdb-tests/scripts/integration.bash
+%{_datadir}/ctdb-tests/scripts/test_wrap
+%{_datadir}/ctdb-tests/scripts/unit.sh
    
 ## man
 # %defattr(-,root,root)
-   /usr/share/man/man1/ctdb.1.gz
-   /usr/share/man/man1/ctdbd.1.gz
-   /usr/share/man/man1/ctdbd_wrapper.1.gz
-   /usr/share/man/man1/dbwrap_tool.1.gz
-   /usr/share/man/man1/findsmb.1.gz
-   /usr/share/man/man1/gentest.1.gz
-   /usr/share/man/man1/ldbadd.1.gz
-   /usr/share/man/man1/ldbdel.1.gz
-   /usr/share/man/man1/ldbedit.1.gz
-   /usr/share/man/man1/ldbmodify.1.gz
-   /usr/share/man/man1/ldbrename.1.gz
-   /usr/share/man/man1/ldbsearch.1.gz
-   /usr/share/man/man1/locktest.1.gz
-   /usr/share/man/man1/log2pcap.1.gz
-   /usr/share/man/man1/ltdbtool.1.gz
-   /usr/share/man/man1/masktest.1.gz
-   /usr/share/man/man1/ndrdump.1.gz
-   /usr/share/man/man1/nmblookup.1.gz
-   /usr/share/man/man1/ntlm_auth.1.gz
-   /usr/share/man/man1/oLschema2ldif.1.gz
-   /usr/share/man/man1/onnode.1.gz
-   /usr/share/man/man1/pidl.1.gz
-   /usr/share/man/man1/ping_pong.1.gz
-   /usr/share/man/man1/profiles.1.gz
-   /usr/share/man/man1/regdiff.1.gz
-   /usr/share/man/man1/regpatch.1.gz
-   /usr/share/man/man1/regshell.1.gz
-   /usr/share/man/man1/regtree.1.gz
-   /usr/share/man/man1/rpcclient.1.gz
-   /usr/share/man/man1/sharesec.1.gz
-   /usr/share/man/man1/smbcacls.1.gz
-   /usr/share/man/man1/smbclient.1.gz
-   /usr/share/man/man1/smbcontrol.1.gz
-   /usr/share/man/man1/smbcquotas.1.gz
-   /usr/share/man/man1/smbget.1.gz
-   /usr/share/man/man1/smbstatus.1.gz
-   /usr/share/man/man1/smbtar.1.gz
-   /usr/share/man/man1/smbtorture.1.gz
-   /usr/share/man/man1/smbtree.1.gz
-   /usr/share/man/man1/testparm.1.gz
-   /usr/share/man/man1/vfstest.1.gz
-   /usr/share/man/man1/wbinfo.1.gz
-   /usr/share/man/man3/Parse::Pidl::Dump.3pm.gz
-   /usr/share/man/man3/Parse::Pidl::NDR.3pm.gz
-   /usr/share/man/man3/Parse::Pidl::Util.3pm.gz
-   /usr/share/man/man3/Parse::Pidl::Wireshark::Conformance.3pm.gz
-   /usr/share/man/man3/Parse::Pidl::Wireshark::NDR.3pm.gz
-   /usr/share/man/man3/ldb.3.gz
-   /usr/share/man/man3/talloc.3.gz
-   /usr/share/man/man5/ctdbd.conf.5.gz
-   /usr/share/man/man5/pam_winbind.conf.5.gz
-   /usr/share/man/man5/smbgetrc.5.gz
-   /usr/share/man/man7/ctdb-statistics.7.gz
-   /usr/share/man/man7/ctdb-tunables.7.gz
-   /usr/share/man/man7/ctdb.7.gz
-   /usr/share/man/man7/libsmbclient.7.gz
-   /usr/share/man/man7/winbind_krb5_locator.7.gz
-   /usr/share/man/man8/eventlogadm.8.gz
-   /usr/share/man/man8/idmap_ad.8.gz
-   /usr/share/man/man8/idmap_autorid.8.gz
-   /usr/share/man/man8/idmap_hash.8.gz
-   /usr/share/man/man8/idmap_ldap.8.gz
-   /usr/share/man/man8/idmap_nss.8.gz
-   /usr/share/man/man8/idmap_rfc2307.8.gz
-   /usr/share/man/man8/idmap_rid.8.gz
-   /usr/share/man/man8/idmap_tdb.8.gz
-   /usr/share/man/man8/idmap_tdb2.8.gz
-   /usr/share/man/man8/net.8.gz
-   /usr/share/man/man8/nmbd.8.gz
-   /usr/share/man/man8/pam_winbind.8.gz
-   /usr/share/man/man8/pdbedit.8.gz
-   /usr/share/man/man8/samba-regedit.8.gz
-   /usr/share/man/man8/samba-tool.8.gz
-   /usr/share/man/man8/samba.8.gz
-   /usr/share/man/man8/smbd.8.gz
-   /usr/share/man/man8/smbpasswd.8.gz
-   /usr/share/man/man8/smbspool.8.gz
-   /usr/share/man/man8/smbta-util.8.gz
-   /usr/share/man/man8/tdbbackup.8.gz
-   /usr/share/man/man8/tdbdump.8.gz
-   /usr/share/man/man8/tdbrestore.8.gz
-   /usr/share/man/man8/tdbtool.8.gz
-   /usr/share/man/man8/vfs_acl_tdb.8.gz
-   /usr/share/man/man8/vfs_acl_xattr.8.gz
-   /usr/share/man/man8/vfs_aio_fork.8.gz
-   /usr/share/man/man8/vfs_aio_linux.8.gz
-   /usr/share/man/man8/vfs_aio_pthread.8.gz
-   /usr/share/man/man8/vfs_audit.8.gz
-   /usr/share/man/man8/vfs_btrfs.8.gz
-   /usr/share/man/man8/vfs_cacheprime.8.gz
-   /usr/share/man/man8/vfs_cap.8.gz
-   /usr/share/man/man8/vfs_catia.8.gz
-   /usr/share/man/man8/vfs_ceph.8.gz
-   /usr/share/man/man8/vfs_commit.8.gz
-   /usr/share/man/man8/vfs_crossrename.8.gz
-   /usr/share/man/man8/vfs_default_quota.8.gz
-   /usr/share/man/man8/vfs_dirsort.8.gz
-   /usr/share/man/man8/vfs_extd_audit.8.gz
-   /usr/share/man/man8/vfs_fake_perms.8.gz
-   /usr/share/man/man8/vfs_fileid.8.gz
-   /usr/share/man/man8/vfs_fruit.8.gz
-   /usr/share/man/man8/vfs_full_audit.8.gz
-   /usr/share/man/man8/vfs_glusterfs.8.gz
-   /usr/share/man/man8/vfs_gpfs.8.gz
-   /usr/share/man/man8/vfs_linux_xfs_sgid.8.gz
-   /usr/share/man/man8/vfs_media_harmony.8.gz
-   /usr/share/man/man8/vfs_netatalk.8.gz
-   /usr/share/man/man8/vfs_prealloc.8.gz
-   /usr/share/man/man8/vfs_preopen.8.gz
-   /usr/share/man/man8/vfs_readahead.8.gz
-   /usr/share/man/man8/vfs_readonly.8.gz
-   /usr/share/man/man8/vfs_recycle.8.gz
-   /usr/share/man/man8/vfs_scannedonly.8.gz
-   /usr/share/man/man8/vfs_shadow_copy.8.gz
-   /usr/share/man/man8/vfs_shadow_copy2.8.gz
-   /usr/share/man/man8/vfs_shell_snap.8.gz
-   /usr/share/man/man8/vfs_smb_traffic_analyzer.8.gz
-   /usr/share/man/man8/vfs_snapper.8.gz
-   /usr/share/man/man8/vfs_streams_depot.8.gz
-   /usr/share/man/man8/vfs_streams_xattr.8.gz
-   /usr/share/man/man8/vfs_syncops.8.gz
-   /usr/share/man/man8/vfs_time_audit.8.gz
-   /usr/share/man/man8/vfs_tsmsm.8.gz
-   /usr/share/man/man8/vfs_unityed_media.8.gz
-   /usr/share/man/man8/vfs_worm.8.gz
-   /usr/share/man/man8/vfs_xattr_tdb.8.gz
-   /usr/share/man/man8/winbindd.8.gz
+%{_mandir}/man1/ctdb.1.gz
+%{_mandir}/man1/ctdbd.1.gz
+%{_mandir}/man1/ctdbd_wrapper.1.gz
+%{_mandir}/man1/dbwrap_tool.1.gz
+%{_mandir}/man1/findsmb.1.gz
+%{_mandir}/man1/gentest.1.gz
+%{_mandir}/man1/ldbadd.1.gz
+%{_mandir}/man1/ldbdel.1.gz
+%{_mandir}/man1/ldbedit.1.gz
+%{_mandir}/man1/ldbmodify.1.gz
+%{_mandir}/man1/ldbrename.1.gz
+%{_mandir}/man1/ldbsearch.1.gz
+%{_mandir}/man1/locktest.1.gz
+%{_mandir}/man1/log2pcap.1.gz
+%{_mandir}/man1/ltdbtool.1.gz
+%{_mandir}/man1/masktest.1.gz
+%{_mandir}/man1/ndrdump.1.gz
+%{_mandir}/man1/nmblookup.1.gz
+%{_mandir}/man1/ntlm_auth.1.gz
+%{_mandir}/man1/oLschema2ldif.1.gz
+%{_mandir}/man1/onnode.1.gz
+%{_mandir}/man1/pidl.1.gz
+%{_mandir}/man1/ping_pong.1.gz
+%{_mandir}/man1/profiles.1.gz
+%{_mandir}/man1/regdiff.1.gz
+%{_mandir}/man1/regpatch.1.gz
+%{_mandir}/man1/regshell.1.gz
+%{_mandir}/man1/regtree.1.gz
+%{_mandir}/man1/rpcclient.1.gz
+%{_mandir}/man1/sharesec.1.gz
+%{_mandir}/man1/smbcacls.1.gz
+%{_mandir}/man1/smbclient.1.gz
+%{_mandir}/man1/smbcontrol.1.gz
+%{_mandir}/man1/smbcquotas.1.gz
+%{_mandir}/man1/smbget.1.gz
+%{_mandir}/man1/smbstatus.1.gz
+%{_mandir}/man1/smbtar.1.gz
+%{_mandir}/man1/smbtorture.1.gz
+%{_mandir}/man1/smbtree.1.gz
+%{_mandir}/man1/testparm.1.gz
+%{_mandir}/man1/vfstest.1.gz
+%{_mandir}/man1/wbinfo.1.gz
+%{_mandir}/man3/Parse::Pidl::Dump.3pm.gz
+%{_mandir}/man3/Parse::Pidl::NDR.3pm.gz
+%{_mandir}/man3/Parse::Pidl::Util.3pm.gz
+%{_mandir}/man3/Parse::Pidl::Wireshark::Conformance.3pm.gz
+%{_mandir}/man3/Parse::Pidl::Wireshark::NDR.3pm.gz
+%{_mandir}/man3/ldb.3.gz
+%{_mandir}/man3/talloc.3.gz
+%{_mandir}/man5/ctdbd.conf.5.gz
+%{_mandir}/man5/pam_winbind.conf.5.gz
+%{_mandir}/man5/smbgetrc.5.gz
+%{_mandir}/man7/ctdb-statistics.7.gz
+%{_mandir}/man7/ctdb-tunables.7.gz
+%{_mandir}/man7/ctdb.7.gz
+%{_mandir}/man7/libsmbclient.7.gz
+%{_mandir}/man7/winbind_krb5_locator.7.gz
+%{_mandir}/man8/eventlogadm.8.gz
+%{_mandir}/man8/idmap_ad.8.gz
+%{_mandir}/man8/idmap_autorid.8.gz
+%{_mandir}/man8/idmap_hash.8.gz
+%{_mandir}/man8/idmap_ldap.8.gz
+%{_mandir}/man8/idmap_nss.8.gz
+%{_mandir}/man8/idmap_rfc2307.8.gz
+%{_mandir}/man8/idmap_rid.8.gz
+%{_mandir}/man8/idmap_tdb.8.gz
+%{_mandir}/man8/idmap_tdb2.8.gz
+%{_mandir}/man8/net.8.gz
+%{_mandir}/man8/nmbd.8.gz
+%{_mandir}/man8/pam_winbind.8.gz
+%{_mandir}/man8/pdbedit.8.gz
+%{_mandir}/man8/samba-regedit.8.gz
+%{_mandir}/man8/samba-tool.8.gz
+%{_mandir}/man8/samba.8.gz
+%{_mandir}/man8/smbd.8.gz
+%{_mandir}/man8/smbpasswd.8.gz
+%{_mandir}/man8/smbspool.8.gz
+%{_mandir}/man8/smbta-util.8.gz
+%{_mandir}/man8/tdbbackup.8.gz
+%{_mandir}/man8/tdbdump.8.gz
+%{_mandir}/man8/tdbrestore.8.gz
+%{_mandir}/man8/tdbtool.8.gz
+%{_mandir}/man8/vfs_acl_tdb.8.gz
+%{_mandir}/man8/vfs_acl_xattr.8.gz
+%{_mandir}/man8/vfs_aio_fork.8.gz
+%{_mandir}/man8/vfs_aio_linux.8.gz
+%{_mandir}/man8/vfs_aio_pthread.8.gz
+%{_mandir}/man8/vfs_audit.8.gz
+%{_mandir}/man8/vfs_btrfs.8.gz
+%{_mandir}/man8/vfs_cacheprime.8.gz
+%{_mandir}/man8/vfs_cap.8.gz
+%{_mandir}/man8/vfs_catia.8.gz
+%{_mandir}/man8/vfs_ceph.8.gz
+%{_mandir}/man8/vfs_commit.8.gz
+%{_mandir}/man8/vfs_crossrename.8.gz
+%{_mandir}/man8/vfs_default_quota.8.gz
+%{_mandir}/man8/vfs_dirsort.8.gz
+%{_mandir}/man8/vfs_extd_audit.8.gz
+%{_mandir}/man8/vfs_fake_perms.8.gz
+%{_mandir}/man8/vfs_fileid.8.gz
+%{_mandir}/man8/vfs_fruit.8.gz
+%{_mandir}/man8/vfs_full_audit.8.gz
+%{_mandir}/man8/vfs_glusterfs.8.gz
+%{_mandir}/man8/vfs_gpfs.8.gz
+%{_mandir}/man8/vfs_linux_xfs_sgid.8.gz
+%{_mandir}/man8/vfs_media_harmony.8.gz
+%{_mandir}/man8/vfs_netatalk.8.gz
+%{_mandir}/man8/vfs_prealloc.8.gz
+%{_mandir}/man8/vfs_preopen.8.gz
+%{_mandir}/man8/vfs_readahead.8.gz
+%{_mandir}/man8/vfs_readonly.8.gz
+%{_mandir}/man8/vfs_recycle.8.gz
+%{_mandir}/man8/vfs_scannedonly.8.gz
+%{_mandir}/man8/vfs_shadow_copy.8.gz
+%{_mandir}/man8/vfs_shadow_copy2.8.gz
+%{_mandir}/man8/vfs_shell_snap.8.gz
+%{_mandir}/man8/vfs_smb_traffic_analyzer.8.gz
+%{_mandir}/man8/vfs_snapper.8.gz
+%{_mandir}/man8/vfs_streams_depot.8.gz
+%{_mandir}/man8/vfs_streams_xattr.8.gz
+%{_mandir}/man8/vfs_syncops.8.gz
+%{_mandir}/man8/vfs_time_audit.8.gz
+%{_mandir}/man8/vfs_tsmsm.8.gz
+%{_mandir}/man8/vfs_unityed_media.8.gz
+%{_mandir}/man8/vfs_worm.8.gz
+%{_mandir}/man8/vfs_xattr_tdb.8.gz
+%{_mandir}/man8/winbindd.8.gz
    
-   /usr/share/man/man5/lmhosts.5.gz
-   /usr/share/man/man5/smb.conf.5.gz
-   /usr/share/man/man5/smbpasswd.5.gz
-   /usr/share/man/man7/samba.7.gz
+%{_mandir}/man5/lmhosts.5.gz
+%{_mandir}/man5/smb.conf.5.gz
+%{_mandir}/man5/smbpasswd.5.gz
+%{_mandir}/man7/samba.7.gz
    
 ## lib of python   
 %defattr(-,root,root)
-   /usr/lib64/python2.6/site-packages/_tdb_text.py
-   /usr/lib64/python2.6/site-packages/_tdb_text.pyc
-   /usr/lib64/python2.6/site-packages/_tdb_text.pyo
-   /usr/lib64/python2.6/site-packages/_tevent.so
-   /usr/lib64/python2.6/site-packages/ldb.so
-   /usr/lib64/python2.6/site-packages/samba/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/_glue.so
-   /usr/lib64/python2.6/site-packages/samba/_ldb.so
-   /usr/lib64/python2.6/site-packages/samba/auth.so
-   /usr/lib64/python2.6/site-packages/samba/com.so
-   /usr/lib64/python2.6/site-packages/samba/common.py
-   /usr/lib64/python2.6/site-packages/samba/common.pyc
-   /usr/lib64/python2.6/site-packages/samba/common.pyo
-   /usr/lib64/python2.6/site-packages/samba/credentials.so
-   /usr/lib64/python2.6/site-packages/samba/dbchecker.py
-   /usr/lib64/python2.6/site-packages/samba/dbchecker.pyc
-   /usr/lib64/python2.6/site-packages/samba/dbchecker.pyo
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/atsvc.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/auth.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/base.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/dcerpc.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/dfs.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/dns.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/dnsp.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/dnsserver.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/drsblobs.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/drsuapi.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/echo.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/epmapper.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/idmap.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/initshutdown.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/irpc.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/krb5pac.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/lsa.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/mgmt.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/misc.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/nbt.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/netlogon.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/samr.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/security.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/server_id.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/smb_acl.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/srvsvc.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/svcctl.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/unixinfo.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/winbind.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/winreg.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/wkssvc.so
-   /usr/lib64/python2.6/site-packages/samba/dcerpc/xattr.so
-   /usr/lib64/python2.6/site-packages/samba/dckeytab.so
-   /usr/lib64/python2.6/site-packages/samba/descriptor.py
-   /usr/lib64/python2.6/site-packages/samba/descriptor.pyc
-   /usr/lib64/python2.6/site-packages/samba/descriptor.pyo
-   /usr/lib64/python2.6/site-packages/samba/drs_utils.py
-   /usr/lib64/python2.6/site-packages/samba/drs_utils.pyc
-   /usr/lib64/python2.6/site-packages/samba/drs_utils.pyo
-   /usr/lib64/python2.6/site-packages/samba/dsdb.so
-   /usr/lib64/python2.6/site-packages/samba/gensec.so
-   /usr/lib64/python2.6/site-packages/samba/getopt.py
-   /usr/lib64/python2.6/site-packages/samba/getopt.pyc
-   /usr/lib64/python2.6/site-packages/samba/getopt.pyo
-   /usr/lib64/python2.6/site-packages/samba/hostconfig.py
-   /usr/lib64/python2.6/site-packages/samba/hostconfig.pyc
-   /usr/lib64/python2.6/site-packages/samba/hostconfig.pyo
-   /usr/lib64/python2.6/site-packages/samba/idmap.py
-   /usr/lib64/python2.6/site-packages/samba/idmap.pyc
-   /usr/lib64/python2.6/site-packages/samba/idmap.pyo
-   /usr/lib64/python2.6/site-packages/samba/join.py
-   /usr/lib64/python2.6/site-packages/samba/join.pyc
-   /usr/lib64/python2.6/site-packages/samba/join.pyo
-   /usr/lib64/python2.6/site-packages/samba/kcc/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/kcc/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/kcc/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/kcc/debug.py
-   /usr/lib64/python2.6/site-packages/samba/kcc/debug.pyc
-   /usr/lib64/python2.6/site-packages/samba/kcc/debug.pyo
-   /usr/lib64/python2.6/site-packages/samba/kcc/graph.py
-   /usr/lib64/python2.6/site-packages/samba/kcc/graph.pyc
-   /usr/lib64/python2.6/site-packages/samba/kcc/graph.pyo
-   /usr/lib64/python2.6/site-packages/samba/kcc/graph_utils.py
-   /usr/lib64/python2.6/site-packages/samba/kcc/graph_utils.pyc
-   /usr/lib64/python2.6/site-packages/samba/kcc/graph_utils.pyo
-   /usr/lib64/python2.6/site-packages/samba/kcc/kcc_utils.py
-   /usr/lib64/python2.6/site-packages/samba/kcc/kcc_utils.pyc
-   /usr/lib64/python2.6/site-packages/samba/kcc/kcc_utils.pyo
-   /usr/lib64/python2.6/site-packages/samba/kcc/ldif_import_export.py
-   /usr/lib64/python2.6/site-packages/samba/kcc/ldif_import_export.pyc
-   /usr/lib64/python2.6/site-packages/samba/kcc/ldif_import_export.pyo
-   /usr/lib64/python2.6/site-packages/samba/messaging.so
-   /usr/lib64/python2.6/site-packages/samba/ms_display_specifiers.py
-   /usr/lib64/python2.6/site-packages/samba/ms_display_specifiers.pyc
-   /usr/lib64/python2.6/site-packages/samba/ms_display_specifiers.pyo
-   /usr/lib64/python2.6/site-packages/samba/ms_schema.py
-   /usr/lib64/python2.6/site-packages/samba/ms_schema.pyc
-   /usr/lib64/python2.6/site-packages/samba/ms_schema.pyo
-   /usr/lib64/python2.6/site-packages/samba/ndr.py
-   /usr/lib64/python2.6/site-packages/samba/ndr.pyc
-   /usr/lib64/python2.6/site-packages/samba/ndr.pyo
-   /usr/lib64/python2.6/site-packages/samba/net.so
-   /usr/lib64/python2.6/site-packages/samba/netbios.so
-   /usr/lib64/python2.6/site-packages/samba/netcmd/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/common.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/common.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/common.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dbcheck.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dbcheck.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dbcheck.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/delegation.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/delegation.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/delegation.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dns.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dns.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dns.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/domain.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/domain.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/domain.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/drs.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/drs.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/drs.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dsacl.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dsacl.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/dsacl.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/fsmo.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/fsmo.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/fsmo.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/gpo.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/gpo.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/gpo.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/group.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/group.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/group.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/ldapcmp.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/ldapcmp.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/ldapcmp.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/main.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/main.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/main.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/ntacl.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/ntacl.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/ntacl.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/processes.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/processes.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/processes.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/rodc.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/rodc.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/rodc.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/sites.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/sites.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/sites.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/spn.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/spn.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/spn.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/testparm.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/testparm.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/testparm.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/time.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/time.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/time.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/user.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/user.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/user.pyo
-   /usr/lib64/python2.6/site-packages/samba/netcmd/vampire.py
-   /usr/lib64/python2.6/site-packages/samba/netcmd/vampire.pyc
-   /usr/lib64/python2.6/site-packages/samba/netcmd/vampire.pyo
-   /usr/lib64/python2.6/site-packages/samba/ntacls.py
-   /usr/lib64/python2.6/site-packages/samba/ntacls.pyc
-   /usr/lib64/python2.6/site-packages/samba/ntacls.pyo
-   /usr/lib64/python2.6/site-packages/samba/param.so
-   /usr/lib64/python2.6/site-packages/samba/policy.so
-   /usr/lib64/python2.6/site-packages/samba/posix_eadb.so
-   /usr/lib64/python2.6/site-packages/samba/provision/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/provision/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/provision/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/provision/backend.py
-   /usr/lib64/python2.6/site-packages/samba/provision/backend.pyc
-   /usr/lib64/python2.6/site-packages/samba/provision/backend.pyo
-   /usr/lib64/python2.6/site-packages/samba/provision/common.py
-   /usr/lib64/python2.6/site-packages/samba/provision/common.pyc
-   /usr/lib64/python2.6/site-packages/samba/provision/common.pyo
-   /usr/lib64/python2.6/site-packages/samba/provision/sambadns.py
-   /usr/lib64/python2.6/site-packages/samba/provision/sambadns.pyc
-   /usr/lib64/python2.6/site-packages/samba/provision/sambadns.pyo
-   /usr/lib64/python2.6/site-packages/samba/registry.so
-   /usr/lib64/python2.6/site-packages/samba/samba3/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/samba3/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/samba3/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/samba3/libsmb_samba_internal.so
-   /usr/lib64/python2.6/site-packages/samba/samba3/param.so
-   /usr/lib64/python2.6/site-packages/samba/samba3/passdb.so
-   /usr/lib64/python2.6/site-packages/samba/samba3/smbd.so
-   /usr/lib64/python2.6/site-packages/samba/samdb.py
-   /usr/lib64/python2.6/site-packages/samba/samdb.pyc
-   /usr/lib64/python2.6/site-packages/samba/samdb.pyo
-   /usr/lib64/python2.6/site-packages/samba/schema.py
-   /usr/lib64/python2.6/site-packages/samba/schema.pyc
-   /usr/lib64/python2.6/site-packages/samba/schema.pyo
-   /usr/lib64/python2.6/site-packages/samba/sd_utils.py
-   /usr/lib64/python2.6/site-packages/samba/sd_utils.pyc
-   /usr/lib64/python2.6/site-packages/samba/sd_utils.pyo
-   /usr/lib64/python2.6/site-packages/samba/security.so
-   /usr/lib64/python2.6/site-packages/samba/sites.py
-   /usr/lib64/python2.6/site-packages/samba/sites.pyc
-   /usr/lib64/python2.6/site-packages/samba/sites.pyo
-   /usr/lib64/python2.6/site-packages/samba/smb.so
-   /usr/lib64/python2.6/site-packages/samba/subunit/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/subunit/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/subunit/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/subunit/run.py
-   /usr/lib64/python2.6/site-packages/samba/subunit/run.pyc
-   /usr/lib64/python2.6/site-packages/samba/subunit/run.pyo
-   /usr/lib64/python2.6/site-packages/samba/tdb_util.py
-   /usr/lib64/python2.6/site-packages/samba/tdb_util.pyc
-   /usr/lib64/python2.6/site-packages/samba/tdb_util.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/tests/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/auth.py
-   /usr/lib64/python2.6/site-packages/samba/tests/auth.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/auth.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/ndrdump.py
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/ndrdump.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/ndrdump.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/samba_tool_drs.py
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/samba_tool_drs.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/blackbox/samba_tool_drs.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/common.py
-   /usr/lib64/python2.6/site-packages/samba/tests/common.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/common.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/core.py
-   /usr/lib64/python2.6/site-packages/samba/tests/core.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/core.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/credentials.py
-   /usr/lib64/python2.6/site-packages/samba/tests/credentials.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/credentials.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/bare.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/bare.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/bare.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/dnsserver.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/dnsserver.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/dnsserver.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/integer.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/integer.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/integer.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/misc.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/misc.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/misc.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/registry.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/registry.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/registry.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/rpc_talloc.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/rpc_talloc.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/rpc_talloc.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/rpcecho.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/rpcecho.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/rpcecho.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/sam.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/sam.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/sam.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/srvsvc.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/srvsvc.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/srvsvc.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/testrpc.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/testrpc.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/testrpc.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/unix.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/unix.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dcerpc/unix.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dns.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dns.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dns.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/docs.py
-   /usr/lib64/python2.6/site-packages/samba/tests/docs.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/docs.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/dsdb.py
-   /usr/lib64/python2.6/site-packages/samba/tests/dsdb.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/dsdb.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/gensec.py
-   /usr/lib64/python2.6/site-packages/samba/tests/gensec.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/gensec.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/getopt.py
-   /usr/lib64/python2.6/site-packages/samba/tests/getopt.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/getopt.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/hostconfig.py
-   /usr/lib64/python2.6/site-packages/samba/tests/hostconfig.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/hostconfig.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/graph.py
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/graph.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/graph.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/graph_utils.py
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/graph_utils.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/graph_utils.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/kcc_utils.py
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/kcc_utils.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/kcc_utils.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/ldif_import_export.py
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/ldif_import_export.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/kcc/ldif_import_export.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/libsmb_samba_internal.py
-   /usr/lib64/python2.6/site-packages/samba/tests/libsmb_samba_internal.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/libsmb_samba_internal.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/messaging.py
-   /usr/lib64/python2.6/site-packages/samba/tests/messaging.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/messaging.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/netcmd.py
-   /usr/lib64/python2.6/site-packages/samba/tests/netcmd.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/netcmd.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/ntacls.py
-   /usr/lib64/python2.6/site-packages/samba/tests/ntacls.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/ntacls.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/param.py
-   /usr/lib64/python2.6/site-packages/samba/tests/param.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/param.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/policy.py
-   /usr/lib64/python2.6/site-packages/samba/tests/policy.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/policy.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/posixacl.py
-   /usr/lib64/python2.6/site-packages/samba/tests/posixacl.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/posixacl.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/provision.py
-   /usr/lib64/python2.6/site-packages/samba/tests/provision.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/provision.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/registry.py
-   /usr/lib64/python2.6/site-packages/samba/tests/registry.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/registry.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba3.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba3.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba3.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba3sam.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba3sam.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba3sam.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/base.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/base.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/base.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/gpo.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/gpo.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/gpo.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/group.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/group.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/group.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/ntacl.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/ntacl.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/ntacl.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/processes.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/processes.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/processes.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/timecmd.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/timecmd.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/timecmd.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/user.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/user.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samba_tool/user.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/samdb.py
-   /usr/lib64/python2.6/site-packages/samba/tests/samdb.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/samdb.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/security.py
-   /usr/lib64/python2.6/site-packages/samba/tests/security.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/security.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/source.py
-   /usr/lib64/python2.6/site-packages/samba/tests/source.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/source.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/strings.py
-   /usr/lib64/python2.6/site-packages/samba/tests/strings.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/strings.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/subunitrun.py
-   /usr/lib64/python2.6/site-packages/samba/tests/subunitrun.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/subunitrun.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/unicodenames.py
-   /usr/lib64/python2.6/site-packages/samba/tests/unicodenames.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/unicodenames.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/upgrade.py
-   /usr/lib64/python2.6/site-packages/samba/tests/upgrade.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/upgrade.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/upgradeprovision.py
-   /usr/lib64/python2.6/site-packages/samba/tests/upgradeprovision.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/upgradeprovision.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/upgradeprovisionneeddc.py
-   /usr/lib64/python2.6/site-packages/samba/tests/upgradeprovisionneeddc.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/upgradeprovisionneeddc.pyo
-   /usr/lib64/python2.6/site-packages/samba/tests/xattr.py
-   /usr/lib64/python2.6/site-packages/samba/tests/xattr.pyc
-   /usr/lib64/python2.6/site-packages/samba/tests/xattr.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/dnssec.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/dnssec.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/dnssec.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/e164.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/e164.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/e164.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/edns.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/edns.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/edns.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/entropy.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/entropy.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/entropy.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/exception.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/exception.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/exception.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/flags.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/flags.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/flags.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/hash.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/hash.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/hash.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/inet.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/inet.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/inet.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ipv4.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ipv4.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ipv4.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ipv6.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ipv6.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ipv6.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/message.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/message.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/message.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/name.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/name.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/name.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/namedict.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/namedict.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/namedict.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/node.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/node.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/node.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/opcode.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/opcode.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/opcode.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/query.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/query.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/query.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rcode.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rcode.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rcode.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdata.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdata.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdata.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdataclass.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdataclass.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdataclass.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdataset.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdataset.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdataset.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdatatype.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdatatype.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdatatype.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/AFSDB.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/AFSDB.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/AFSDB.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/CERT.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/CERT.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/CERT.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/CNAME.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/CNAME.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/CNAME.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DLV.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DLV.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DLV.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DNAME.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DNAME.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DNAME.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DNSKEY.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DNSKEY.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DNSKEY.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DS.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DS.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/DS.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/GPOS.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/GPOS.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/GPOS.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/HINFO.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/HINFO.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/HINFO.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/HIP.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/HIP.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/HIP.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/ISDN.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/ISDN.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/ISDN.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/LOC.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/LOC.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/LOC.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/MX.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/MX.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/MX.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NS.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NS.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NS.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC3.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC3.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC3.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC3PARAM.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC3PARAM.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/NSEC3PARAM.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/PTR.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/PTR.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/PTR.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RP.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RP.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RP.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RRSIG.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RRSIG.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RRSIG.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RT.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RT.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/RT.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SOA.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SOA.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SOA.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SPF.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SPF.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SPF.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SSHFP.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SSHFP.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/SSHFP.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/TXT.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/TXT.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/TXT.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/X25.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/X25.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/X25.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/ANY/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/A.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/A.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/A.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/AAAA.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/AAAA.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/AAAA.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/APL.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/APL.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/APL.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/DHCID.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/DHCID.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/DHCID.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/IPSECKEY.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/IPSECKEY.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/IPSECKEY.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/KX.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/KX.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/KX.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NAPTR.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NAPTR.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NAPTR.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NSAP.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NSAP.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NSAP.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NSAP_PTR.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NSAP_PTR.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/NSAP_PTR.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/PX.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/PX.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/PX.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/SRV.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/SRV.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/SRV.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/WKS.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/WKS.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/WKS.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/IN/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/dsbase.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/dsbase.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/dsbase.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/mxbase.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/mxbase.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/mxbase.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/nsbase.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/nsbase.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/nsbase.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/txtbase.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/txtbase.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rdtypes/txtbase.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/renderer.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/renderer.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/renderer.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/resolver.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/resolver.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/resolver.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/reversename.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/reversename.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/reversename.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rrset.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rrset.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/rrset.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/set.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/set.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/set.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tokenizer.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tokenizer.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tokenizer.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tsig.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tsig.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tsig.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tsigkeyring.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tsigkeyring.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/tsigkeyring.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ttl.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ttl.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/ttl.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/update.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/update.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/update.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/version.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/version.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/version.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/wiredata.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/wiredata.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/wiredata.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/zone.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/zone.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/dns/zone.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/iso8601.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/iso8601.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/iso8601.pyo
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/test_iso8601.py
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/test_iso8601.pyc
-   /usr/lib64/python2.6/site-packages/samba/third_party/iso8601/test_iso8601.pyo
-   /usr/lib64/python2.6/site-packages/samba/upgrade.py
-   /usr/lib64/python2.6/site-packages/samba/upgrade.pyc
-   /usr/lib64/python2.6/site-packages/samba/upgrade.pyo
-   /usr/lib64/python2.6/site-packages/samba/upgradehelpers.py
-   /usr/lib64/python2.6/site-packages/samba/upgradehelpers.pyc
-   /usr/lib64/python2.6/site-packages/samba/upgradehelpers.pyo
-   /usr/lib64/python2.6/site-packages/samba/web_server/__init__.py
-   /usr/lib64/python2.6/site-packages/samba/web_server/__init__.pyc
-   /usr/lib64/python2.6/site-packages/samba/web_server/__init__.pyo
-   /usr/lib64/python2.6/site-packages/samba/xattr.py
-   /usr/lib64/python2.6/site-packages/samba/xattr.pyc
-   /usr/lib64/python2.6/site-packages/samba/xattr.pyo
-   /usr/lib64/python2.6/site-packages/samba/xattr_native.so
-   /usr/lib64/python2.6/site-packages/samba/xattr_tdb.so
-   /usr/lib64/python2.6/site-packages/talloc.so
-   /usr/lib64/python2.6/site-packages/tdb.so
-   /usr/lib64/python2.6/site-packages/tevent.py
-   /usr/lib64/python2.6/site-packages/tevent.pyc
-   /usr/lib64/python2.6/site-packages/tevent.pyo
+%{python_sitearch}/_tdb_text.py
+%{python_sitearch}/_tdb_text.pyc
+%{python_sitearch}/_tdb_text.pyo
+%{python_sitearch}/_tevent.so
+%{python_sitearch}/ldb.so
+%{python_sitearch}/samba/__init__.py
+%{python_sitearch}/samba/__init__.pyc
+%{python_sitearch}/samba/__init__.pyo
+%{python_sitearch}/samba/_glue.so
+%{python_sitearch}/samba/_ldb.so
+%{python_sitearch}/samba/auth.so
+%{python_sitearch}/samba/com.so
+%{python_sitearch}/samba/common.py
+%{python_sitearch}/samba/common.pyc
+%{python_sitearch}/samba/common.pyo
+%{python_sitearch}/samba/credentials.so
+%{python_sitearch}/samba/dbchecker.py
+%{python_sitearch}/samba/dbchecker.pyc
+%{python_sitearch}/samba/dbchecker.pyo
+%{python_sitearch}/samba/dcerpc/__init__.py
+%{python_sitearch}/samba/dcerpc/__init__.pyc
+%{python_sitearch}/samba/dcerpc/__init__.pyo
+%{python_sitearch}/samba/dcerpc/atsvc.so
+%{python_sitearch}/samba/dcerpc/auth.so
+%{python_sitearch}/samba/dcerpc/base.so
+%{python_sitearch}/samba/dcerpc/dcerpc.so
+%{python_sitearch}/samba/dcerpc/dfs.so
+%{python_sitearch}/samba/dcerpc/dns.so
+%{python_sitearch}/samba/dcerpc/dnsp.so
+%{python_sitearch}/samba/dcerpc/dnsserver.so
+%{python_sitearch}/samba/dcerpc/drsblobs.so
+%{python_sitearch}/samba/dcerpc/drsuapi.so
+%{python_sitearch}/samba/dcerpc/echo.so
+%{python_sitearch}/samba/dcerpc/epmapper.so
+%{python_sitearch}/samba/dcerpc/idmap.so
+%{python_sitearch}/samba/dcerpc/initshutdown.so
+%{python_sitearch}/samba/dcerpc/irpc.so
+%{python_sitearch}/samba/dcerpc/krb5pac.so
+%{python_sitearch}/samba/dcerpc/lsa.so
+%{python_sitearch}/samba/dcerpc/mgmt.so
+%{python_sitearch}/samba/dcerpc/misc.so
+%{python_sitearch}/samba/dcerpc/nbt.so
+%{python_sitearch}/samba/dcerpc/netlogon.so
+%{python_sitearch}/samba/dcerpc/samr.so
+%{python_sitearch}/samba/dcerpc/security.so
+%{python_sitearch}/samba/dcerpc/server_id.so
+%{python_sitearch}/samba/dcerpc/smb_acl.so
+%{python_sitearch}/samba/dcerpc/srvsvc.so
+%{python_sitearch}/samba/dcerpc/svcctl.so
+%{python_sitearch}/samba/dcerpc/unixinfo.so
+%{python_sitearch}/samba/dcerpc/winbind.so
+%{python_sitearch}/samba/dcerpc/winreg.so
+%{python_sitearch}/samba/dcerpc/wkssvc.so
+%{python_sitearch}/samba/dcerpc/xattr.so
+%{python_sitearch}/samba/dckeytab.so
+%{python_sitearch}/samba/descriptor.py
+%{python_sitearch}/samba/descriptor.pyc
+%{python_sitearch}/samba/descriptor.pyo
+%{python_sitearch}/samba/drs_utils.py
+%{python_sitearch}/samba/drs_utils.pyc
+%{python_sitearch}/samba/drs_utils.pyo
+%{python_sitearch}/samba/dsdb.so
+%{python_sitearch}/samba/gensec.so
+%{python_sitearch}/samba/getopt.py
+%{python_sitearch}/samba/getopt.pyc
+%{python_sitearch}/samba/getopt.pyo
+%{python_sitearch}/samba/hostconfig.py
+%{python_sitearch}/samba/hostconfig.pyc
+%{python_sitearch}/samba/hostconfig.pyo
+%{python_sitearch}/samba/idmap.py
+%{python_sitearch}/samba/idmap.pyc
+%{python_sitearch}/samba/idmap.pyo
+%{python_sitearch}/samba/join.py
+%{python_sitearch}/samba/join.pyc
+%{python_sitearch}/samba/join.pyo
+%{python_sitearch}/samba/kcc/__init__.py
+%{python_sitearch}/samba/kcc/__init__.pyc
+%{python_sitearch}/samba/kcc/__init__.pyo
+%{python_sitearch}/samba/kcc/debug.py
+%{python_sitearch}/samba/kcc/debug.pyc
+%{python_sitearch}/samba/kcc/debug.pyo
+%{python_sitearch}/samba/kcc/graph.py
+%{python_sitearch}/samba/kcc/graph.pyc
+%{python_sitearch}/samba/kcc/graph.pyo
+%{python_sitearch}/samba/kcc/graph_utils.py
+%{python_sitearch}/samba/kcc/graph_utils.pyc
+%{python_sitearch}/samba/kcc/graph_utils.pyo
+%{python_sitearch}/samba/kcc/kcc_utils.py
+%{python_sitearch}/samba/kcc/kcc_utils.pyc
+%{python_sitearch}/samba/kcc/kcc_utils.pyo
+%{python_sitearch}/samba/kcc/ldif_import_export.py
+%{python_sitearch}/samba/kcc/ldif_import_export.pyc
+%{python_sitearch}/samba/kcc/ldif_import_export.pyo
+%{python_sitearch}/samba/messaging.so
+%{python_sitearch}/samba/ms_display_specifiers.py
+%{python_sitearch}/samba/ms_display_specifiers.pyc
+%{python_sitearch}/samba/ms_display_specifiers.pyo
+%{python_sitearch}/samba/ms_schema.py
+%{python_sitearch}/samba/ms_schema.pyc
+%{python_sitearch}/samba/ms_schema.pyo
+%{python_sitearch}/samba/ndr.py
+%{python_sitearch}/samba/ndr.pyc
+%{python_sitearch}/samba/ndr.pyo
+%{python_sitearch}/samba/net.so
+%{python_sitearch}/samba/netbios.so
+%{python_sitearch}/samba/netcmd/__init__.py
+%{python_sitearch}/samba/netcmd/__init__.pyc
+%{python_sitearch}/samba/netcmd/__init__.pyo
+%{python_sitearch}/samba/netcmd/common.py
+%{python_sitearch}/samba/netcmd/common.pyc
+%{python_sitearch}/samba/netcmd/common.pyo
+%{python_sitearch}/samba/netcmd/dbcheck.py
+%{python_sitearch}/samba/netcmd/dbcheck.pyc
+%{python_sitearch}/samba/netcmd/dbcheck.pyo
+%{python_sitearch}/samba/netcmd/delegation.py
+%{python_sitearch}/samba/netcmd/delegation.pyc
+%{python_sitearch}/samba/netcmd/delegation.pyo
+%{python_sitearch}/samba/netcmd/dns.py
+%{python_sitearch}/samba/netcmd/dns.pyc
+%{python_sitearch}/samba/netcmd/dns.pyo
+%{python_sitearch}/samba/netcmd/domain.py
+%{python_sitearch}/samba/netcmd/domain.pyc
+%{python_sitearch}/samba/netcmd/domain.pyo
+%{python_sitearch}/samba/netcmd/drs.py
+%{python_sitearch}/samba/netcmd/drs.pyc
+%{python_sitearch}/samba/netcmd/drs.pyo
+%{python_sitearch}/samba/netcmd/dsacl.py
+%{python_sitearch}/samba/netcmd/dsacl.pyc
+%{python_sitearch}/samba/netcmd/dsacl.pyo
+%{python_sitearch}/samba/netcmd/fsmo.py
+%{python_sitearch}/samba/netcmd/fsmo.pyc
+%{python_sitearch}/samba/netcmd/fsmo.pyo
+%{python_sitearch}/samba/netcmd/gpo.py
+%{python_sitearch}/samba/netcmd/gpo.pyc
+%{python_sitearch}/samba/netcmd/gpo.pyo
+%{python_sitearch}/samba/netcmd/group.py
+%{python_sitearch}/samba/netcmd/group.pyc
+%{python_sitearch}/samba/netcmd/group.pyo
+%{python_sitearch}/samba/netcmd/ldapcmp.py
+%{python_sitearch}/samba/netcmd/ldapcmp.pyc
+%{python_sitearch}/samba/netcmd/ldapcmp.pyo
+%{python_sitearch}/samba/netcmd/main.py
+%{python_sitearch}/samba/netcmd/main.pyc
+%{python_sitearch}/samba/netcmd/main.pyo
+%{python_sitearch}/samba/netcmd/ntacl.py
+%{python_sitearch}/samba/netcmd/ntacl.pyc
+%{python_sitearch}/samba/netcmd/ntacl.pyo
+%{python_sitearch}/samba/netcmd/processes.py
+%{python_sitearch}/samba/netcmd/processes.pyc
+%{python_sitearch}/samba/netcmd/processes.pyo
+%{python_sitearch}/samba/netcmd/rodc.py
+%{python_sitearch}/samba/netcmd/rodc.pyc
+%{python_sitearch}/samba/netcmd/rodc.pyo
+%{python_sitearch}/samba/netcmd/sites.py
+%{python_sitearch}/samba/netcmd/sites.pyc
+%{python_sitearch}/samba/netcmd/sites.pyo
+%{python_sitearch}/samba/netcmd/spn.py
+%{python_sitearch}/samba/netcmd/spn.pyc
+%{python_sitearch}/samba/netcmd/spn.pyo
+%{python_sitearch}/samba/netcmd/testparm.py
+%{python_sitearch}/samba/netcmd/testparm.pyc
+%{python_sitearch}/samba/netcmd/testparm.pyo
+%{python_sitearch}/samba/netcmd/time.py
+%{python_sitearch}/samba/netcmd/time.pyc
+%{python_sitearch}/samba/netcmd/time.pyo
+%{python_sitearch}/samba/netcmd/user.py
+%{python_sitearch}/samba/netcmd/user.pyc
+%{python_sitearch}/samba/netcmd/user.pyo
+%{python_sitearch}/samba/netcmd/vampire.py
+%{python_sitearch}/samba/netcmd/vampire.pyc
+%{python_sitearch}/samba/netcmd/vampire.pyo
+%{python_sitearch}/samba/ntacls.py
+%{python_sitearch}/samba/ntacls.pyc
+%{python_sitearch}/samba/ntacls.pyo
+%{python_sitearch}/samba/param.so
+%{python_sitearch}/samba/policy.so
+%{python_sitearch}/samba/posix_eadb.so
+%{python_sitearch}/samba/provision/__init__.py
+%{python_sitearch}/samba/provision/__init__.pyc
+%{python_sitearch}/samba/provision/__init__.pyo
+%{python_sitearch}/samba/provision/backend.py
+%{python_sitearch}/samba/provision/backend.pyc
+%{python_sitearch}/samba/provision/backend.pyo
+%{python_sitearch}/samba/provision/common.py
+%{python_sitearch}/samba/provision/common.pyc
+%{python_sitearch}/samba/provision/common.pyo
+%{python_sitearch}/samba/provision/sambadns.py
+%{python_sitearch}/samba/provision/sambadns.pyc
+%{python_sitearch}/samba/provision/sambadns.pyo
+%{python_sitearch}/samba/registry.so
+%{python_sitearch}/samba/samba3/__init__.py
+%{python_sitearch}/samba/samba3/__init__.pyc
+%{python_sitearch}/samba/samba3/__init__.pyo
+%{python_sitearch}/samba/samba3/libsmb_samba_internal.so
+%{python_sitearch}/samba/samba3/param.so
+%{python_sitearch}/samba/samba3/passdb.so
+%{python_sitearch}/samba/samba3/smbd.so
+%{python_sitearch}/samba/samdb.py
+%{python_sitearch}/samba/samdb.pyc
+%{python_sitearch}/samba/samdb.pyo
+%{python_sitearch}/samba/schema.py
+%{python_sitearch}/samba/schema.pyc
+%{python_sitearch}/samba/schema.pyo
+%{python_sitearch}/samba/sd_utils.py
+%{python_sitearch}/samba/sd_utils.pyc
+%{python_sitearch}/samba/sd_utils.pyo
+%{python_sitearch}/samba/security.so
+%{python_sitearch}/samba/sites.py
+%{python_sitearch}/samba/sites.pyc
+%{python_sitearch}/samba/sites.pyo
+%{python_sitearch}/samba/smb.so
+%{python_sitearch}/samba/subunit/__init__.py
+%{python_sitearch}/samba/subunit/__init__.pyc
+%{python_sitearch}/samba/subunit/__init__.pyo
+%{python_sitearch}/samba/subunit/run.py
+%{python_sitearch}/samba/subunit/run.pyc
+%{python_sitearch}/samba/subunit/run.pyo
+%{python_sitearch}/samba/tdb_util.py
+%{python_sitearch}/samba/tdb_util.pyc
+%{python_sitearch}/samba/tdb_util.pyo
+%{python_sitearch}/samba/tests/__init__.py
+%{python_sitearch}/samba/tests/__init__.pyc
+%{python_sitearch}/samba/tests/__init__.pyo
+%{python_sitearch}/samba/tests/auth.py
+%{python_sitearch}/samba/tests/auth.pyc
+%{python_sitearch}/samba/tests/auth.pyo
+%{python_sitearch}/samba/tests/blackbox/__init__.py
+%{python_sitearch}/samba/tests/blackbox/__init__.pyc
+%{python_sitearch}/samba/tests/blackbox/__init__.pyo
+%{python_sitearch}/samba/tests/blackbox/ndrdump.py
+%{python_sitearch}/samba/tests/blackbox/ndrdump.pyc
+%{python_sitearch}/samba/tests/blackbox/ndrdump.pyo
+%{python_sitearch}/samba/tests/blackbox/samba_tool_drs.py
+%{python_sitearch}/samba/tests/blackbox/samba_tool_drs.pyc
+%{python_sitearch}/samba/tests/blackbox/samba_tool_drs.pyo
+%{python_sitearch}/samba/tests/common.py
+%{python_sitearch}/samba/tests/common.pyc
+%{python_sitearch}/samba/tests/common.pyo
+%{python_sitearch}/samba/tests/core.py
+%{python_sitearch}/samba/tests/core.pyc
+%{python_sitearch}/samba/tests/core.pyo
+%{python_sitearch}/samba/tests/credentials.py
+%{python_sitearch}/samba/tests/credentials.pyc
+%{python_sitearch}/samba/tests/credentials.pyo
+%{python_sitearch}/samba/tests/dcerpc/__init__.py
+%{python_sitearch}/samba/tests/dcerpc/__init__.pyc
+%{python_sitearch}/samba/tests/dcerpc/__init__.pyo
+%{python_sitearch}/samba/tests/dcerpc/bare.py
+%{python_sitearch}/samba/tests/dcerpc/bare.pyc
+%{python_sitearch}/samba/tests/dcerpc/bare.pyo
+%{python_sitearch}/samba/tests/dcerpc/dnsserver.py
+%{python_sitearch}/samba/tests/dcerpc/dnsserver.pyc
+%{python_sitearch}/samba/tests/dcerpc/dnsserver.pyo
+%{python_sitearch}/samba/tests/dcerpc/integer.py
+%{python_sitearch}/samba/tests/dcerpc/integer.pyc
+%{python_sitearch}/samba/tests/dcerpc/integer.pyo
+%{python_sitearch}/samba/tests/dcerpc/misc.py
+%{python_sitearch}/samba/tests/dcerpc/misc.pyc
+%{python_sitearch}/samba/tests/dcerpc/misc.pyo
+%{python_sitearch}/samba/tests/dcerpc/registry.py
+%{python_sitearch}/samba/tests/dcerpc/registry.pyc
+%{python_sitearch}/samba/tests/dcerpc/registry.pyo
+%{python_sitearch}/samba/tests/dcerpc/rpc_talloc.py
+%{python_sitearch}/samba/tests/dcerpc/rpc_talloc.pyc
+%{python_sitearch}/samba/tests/dcerpc/rpc_talloc.pyo
+%{python_sitearch}/samba/tests/dcerpc/rpcecho.py
+%{python_sitearch}/samba/tests/dcerpc/rpcecho.pyc
+%{python_sitearch}/samba/tests/dcerpc/rpcecho.pyo
+%{python_sitearch}/samba/tests/dcerpc/sam.py
+%{python_sitearch}/samba/tests/dcerpc/sam.pyc
+%{python_sitearch}/samba/tests/dcerpc/sam.pyo
+%{python_sitearch}/samba/tests/dcerpc/srvsvc.py
+%{python_sitearch}/samba/tests/dcerpc/srvsvc.pyc
+%{python_sitearch}/samba/tests/dcerpc/srvsvc.pyo
+%{python_sitearch}/samba/tests/dcerpc/testrpc.py
+%{python_sitearch}/samba/tests/dcerpc/testrpc.pyc
+%{python_sitearch}/samba/tests/dcerpc/testrpc.pyo
+%{python_sitearch}/samba/tests/dcerpc/unix.py
+%{python_sitearch}/samba/tests/dcerpc/unix.pyc
+%{python_sitearch}/samba/tests/dcerpc/unix.pyo
+%{python_sitearch}/samba/tests/dns.py
+%{python_sitearch}/samba/tests/dns.pyc
+%{python_sitearch}/samba/tests/dns.pyo
+%{python_sitearch}/samba/tests/docs.py
+%{python_sitearch}/samba/tests/docs.pyc
+%{python_sitearch}/samba/tests/docs.pyo
+%{python_sitearch}/samba/tests/dsdb.py
+%{python_sitearch}/samba/tests/dsdb.pyc
+%{python_sitearch}/samba/tests/dsdb.pyo
+%{python_sitearch}/samba/tests/gensec.py
+%{python_sitearch}/samba/tests/gensec.pyc
+%{python_sitearch}/samba/tests/gensec.pyo
+%{python_sitearch}/samba/tests/getopt.py
+%{python_sitearch}/samba/tests/getopt.pyc
+%{python_sitearch}/samba/tests/getopt.pyo
+%{python_sitearch}/samba/tests/hostconfig.py
+%{python_sitearch}/samba/tests/hostconfig.pyc
+%{python_sitearch}/samba/tests/hostconfig.pyo
+%{python_sitearch}/samba/tests/kcc/__init__.py
+%{python_sitearch}/samba/tests/kcc/__init__.pyc
+%{python_sitearch}/samba/tests/kcc/__init__.pyo
+%{python_sitearch}/samba/tests/kcc/graph.py
+%{python_sitearch}/samba/tests/kcc/graph.pyc
+%{python_sitearch}/samba/tests/kcc/graph.pyo
+%{python_sitearch}/samba/tests/kcc/graph_utils.py
+%{python_sitearch}/samba/tests/kcc/graph_utils.pyc
+%{python_sitearch}/samba/tests/kcc/graph_utils.pyo
+%{python_sitearch}/samba/tests/kcc/kcc_utils.py
+%{python_sitearch}/samba/tests/kcc/kcc_utils.pyc
+%{python_sitearch}/samba/tests/kcc/kcc_utils.pyo
+%{python_sitearch}/samba/tests/kcc/ldif_import_export.py
+%{python_sitearch}/samba/tests/kcc/ldif_import_export.pyc
+%{python_sitearch}/samba/tests/kcc/ldif_import_export.pyo
+%{python_sitearch}/samba/tests/libsmb_samba_internal.py
+%{python_sitearch}/samba/tests/libsmb_samba_internal.pyc
+%{python_sitearch}/samba/tests/libsmb_samba_internal.pyo
+%{python_sitearch}/samba/tests/messaging.py
+%{python_sitearch}/samba/tests/messaging.pyc
+%{python_sitearch}/samba/tests/messaging.pyo
+%{python_sitearch}/samba/tests/netcmd.py
+%{python_sitearch}/samba/tests/netcmd.pyc
+%{python_sitearch}/samba/tests/netcmd.pyo
+%{python_sitearch}/samba/tests/ntacls.py
+%{python_sitearch}/samba/tests/ntacls.pyc
+%{python_sitearch}/samba/tests/ntacls.pyo
+%{python_sitearch}/samba/tests/param.py
+%{python_sitearch}/samba/tests/param.pyc
+%{python_sitearch}/samba/tests/param.pyo
+%{python_sitearch}/samba/tests/policy.py
+%{python_sitearch}/samba/tests/policy.pyc
+%{python_sitearch}/samba/tests/policy.pyo
+%{python_sitearch}/samba/tests/posixacl.py
+%{python_sitearch}/samba/tests/posixacl.pyc
+%{python_sitearch}/samba/tests/posixacl.pyo
+%{python_sitearch}/samba/tests/provision.py
+%{python_sitearch}/samba/tests/provision.pyc
+%{python_sitearch}/samba/tests/provision.pyo
+%{python_sitearch}/samba/tests/registry.py
+%{python_sitearch}/samba/tests/registry.pyc
+%{python_sitearch}/samba/tests/registry.pyo
+%{python_sitearch}/samba/tests/samba3.py
+%{python_sitearch}/samba/tests/samba3.pyc
+%{python_sitearch}/samba/tests/samba3.pyo
+%{python_sitearch}/samba/tests/samba3sam.py
+%{python_sitearch}/samba/tests/samba3sam.pyc
+%{python_sitearch}/samba/tests/samba3sam.pyo
+%{python_sitearch}/samba/tests/samba_tool/__init__.py
+%{python_sitearch}/samba/tests/samba_tool/__init__.pyc
+%{python_sitearch}/samba/tests/samba_tool/__init__.pyo
+%{python_sitearch}/samba/tests/samba_tool/base.py
+%{python_sitearch}/samba/tests/samba_tool/base.pyc
+%{python_sitearch}/samba/tests/samba_tool/base.pyo
+%{python_sitearch}/samba/tests/samba_tool/gpo.py
+%{python_sitearch}/samba/tests/samba_tool/gpo.pyc
+%{python_sitearch}/samba/tests/samba_tool/gpo.pyo
+%{python_sitearch}/samba/tests/samba_tool/group.py
+%{python_sitearch}/samba/tests/samba_tool/group.pyc
+%{python_sitearch}/samba/tests/samba_tool/group.pyo
+%{python_sitearch}/samba/tests/samba_tool/ntacl.py
+%{python_sitearch}/samba/tests/samba_tool/ntacl.pyc
+%{python_sitearch}/samba/tests/samba_tool/ntacl.pyo
+%{python_sitearch}/samba/tests/samba_tool/processes.py
+%{python_sitearch}/samba/tests/samba_tool/processes.pyc
+%{python_sitearch}/samba/tests/samba_tool/processes.pyo
+%{python_sitearch}/samba/tests/samba_tool/timecmd.py
+%{python_sitearch}/samba/tests/samba_tool/timecmd.pyc
+%{python_sitearch}/samba/tests/samba_tool/timecmd.pyo
+%{python_sitearch}/samba/tests/samba_tool/user.py
+%{python_sitearch}/samba/tests/samba_tool/user.pyc
+%{python_sitearch}/samba/tests/samba_tool/user.pyo
+%{python_sitearch}/samba/tests/samdb.py
+%{python_sitearch}/samba/tests/samdb.pyc
+%{python_sitearch}/samba/tests/samdb.pyo
+%{python_sitearch}/samba/tests/security.py
+%{python_sitearch}/samba/tests/security.pyc
+%{python_sitearch}/samba/tests/security.pyo
+%{python_sitearch}/samba/tests/source.py
+%{python_sitearch}/samba/tests/source.pyc
+%{python_sitearch}/samba/tests/source.pyo
+%{python_sitearch}/samba/tests/strings.py
+%{python_sitearch}/samba/tests/strings.pyc
+%{python_sitearch}/samba/tests/strings.pyo
+%{python_sitearch}/samba/tests/subunitrun.py
+%{python_sitearch}/samba/tests/subunitrun.pyc
+%{python_sitearch}/samba/tests/subunitrun.pyo
+%{python_sitearch}/samba/tests/unicodenames.py
+%{python_sitearch}/samba/tests/unicodenames.pyc
+%{python_sitearch}/samba/tests/unicodenames.pyo
+%{python_sitearch}/samba/tests/upgrade.py
+%{python_sitearch}/samba/tests/upgrade.pyc
+%{python_sitearch}/samba/tests/upgrade.pyo
+%{python_sitearch}/samba/tests/upgradeprovision.py
+%{python_sitearch}/samba/tests/upgradeprovision.pyc
+%{python_sitearch}/samba/tests/upgradeprovision.pyo
+%{python_sitearch}/samba/tests/upgradeprovisionneeddc.py
+%{python_sitearch}/samba/tests/upgradeprovisionneeddc.pyc
+%{python_sitearch}/samba/tests/upgradeprovisionneeddc.pyo
+%{python_sitearch}/samba/tests/xattr.py
+%{python_sitearch}/samba/tests/xattr.pyc
+%{python_sitearch}/samba/tests/xattr.pyo
+%{python_sitearch}/samba/third_party/__init__.py
+%{python_sitearch}/samba/third_party/__init__.pyc
+%{python_sitearch}/samba/third_party/__init__.pyo
+%{python_sitearch}/samba/third_party/dns/__init__.py
+%{python_sitearch}/samba/third_party/dns/__init__.pyc
+%{python_sitearch}/samba/third_party/dns/__init__.pyo
+%{python_sitearch}/samba/third_party/dns/dnssec.py
+%{python_sitearch}/samba/third_party/dns/dnssec.pyc
+%{python_sitearch}/samba/third_party/dns/dnssec.pyo
+%{python_sitearch}/samba/third_party/dns/e164.py
+%{python_sitearch}/samba/third_party/dns/e164.pyc
+%{python_sitearch}/samba/third_party/dns/e164.pyo
+%{python_sitearch}/samba/third_party/dns/edns.py
+%{python_sitearch}/samba/third_party/dns/edns.pyc
+%{python_sitearch}/samba/third_party/dns/edns.pyo
+%{python_sitearch}/samba/third_party/dns/entropy.py
+%{python_sitearch}/samba/third_party/dns/entropy.pyc
+%{python_sitearch}/samba/third_party/dns/entropy.pyo
+%{python_sitearch}/samba/third_party/dns/exception.py
+%{python_sitearch}/samba/third_party/dns/exception.pyc
+%{python_sitearch}/samba/third_party/dns/exception.pyo
+%{python_sitearch}/samba/third_party/dns/flags.py
+%{python_sitearch}/samba/third_party/dns/flags.pyc
+%{python_sitearch}/samba/third_party/dns/flags.pyo
+%{python_sitearch}/samba/third_party/dns/hash.py
+%{python_sitearch}/samba/third_party/dns/hash.pyc
+%{python_sitearch}/samba/third_party/dns/hash.pyo
+%{python_sitearch}/samba/third_party/dns/inet.py
+%{python_sitearch}/samba/third_party/dns/inet.pyc
+%{python_sitearch}/samba/third_party/dns/inet.pyo
+%{python_sitearch}/samba/third_party/dns/ipv4.py
+%{python_sitearch}/samba/third_party/dns/ipv4.pyc
+%{python_sitearch}/samba/third_party/dns/ipv4.pyo
+%{python_sitearch}/samba/third_party/dns/ipv6.py
+%{python_sitearch}/samba/third_party/dns/ipv6.pyc
+%{python_sitearch}/samba/third_party/dns/ipv6.pyo
+%{python_sitearch}/samba/third_party/dns/message.py
+%{python_sitearch}/samba/third_party/dns/message.pyc
+%{python_sitearch}/samba/third_party/dns/message.pyo
+%{python_sitearch}/samba/third_party/dns/name.py
+%{python_sitearch}/samba/third_party/dns/name.pyc
+%{python_sitearch}/samba/third_party/dns/name.pyo
+%{python_sitearch}/samba/third_party/dns/namedict.py
+%{python_sitearch}/samba/third_party/dns/namedict.pyc
+%{python_sitearch}/samba/third_party/dns/namedict.pyo
+%{python_sitearch}/samba/third_party/dns/node.py
+%{python_sitearch}/samba/third_party/dns/node.pyc
+%{python_sitearch}/samba/third_party/dns/node.pyo
+%{python_sitearch}/samba/third_party/dns/opcode.py
+%{python_sitearch}/samba/third_party/dns/opcode.pyc
+%{python_sitearch}/samba/third_party/dns/opcode.pyo
+%{python_sitearch}/samba/third_party/dns/query.py
+%{python_sitearch}/samba/third_party/dns/query.pyc
+%{python_sitearch}/samba/third_party/dns/query.pyo
+%{python_sitearch}/samba/third_party/dns/rcode.py
+%{python_sitearch}/samba/third_party/dns/rcode.pyc
+%{python_sitearch}/samba/third_party/dns/rcode.pyo
+%{python_sitearch}/samba/third_party/dns/rdata.py
+%{python_sitearch}/samba/third_party/dns/rdata.pyc
+%{python_sitearch}/samba/third_party/dns/rdata.pyo
+%{python_sitearch}/samba/third_party/dns/rdataclass.py
+%{python_sitearch}/samba/third_party/dns/rdataclass.pyc
+%{python_sitearch}/samba/third_party/dns/rdataclass.pyo
+%{python_sitearch}/samba/third_party/dns/rdataset.py
+%{python_sitearch}/samba/third_party/dns/rdataset.pyc
+%{python_sitearch}/samba/third_party/dns/rdataset.pyo
+%{python_sitearch}/samba/third_party/dns/rdatatype.py
+%{python_sitearch}/samba/third_party/dns/rdatatype.pyc
+%{python_sitearch}/samba/third_party/dns/rdatatype.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/AFSDB.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/AFSDB.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/AFSDB.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/CERT.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/CERT.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/CERT.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/CNAME.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/CNAME.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/CNAME.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DLV.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DLV.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DLV.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DNAME.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DNAME.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DNAME.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DNSKEY.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DNSKEY.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DNSKEY.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DS.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DS.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/DS.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/GPOS.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/GPOS.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/GPOS.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/HINFO.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/HINFO.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/HINFO.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/HIP.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/HIP.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/HIP.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/ISDN.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/ISDN.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/ISDN.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/LOC.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/LOC.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/LOC.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/MX.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/MX.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/MX.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NS.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NS.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NS.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC3.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC3.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC3.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC3PARAM.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC3PARAM.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/NSEC3PARAM.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/PTR.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/PTR.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/PTR.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RP.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RP.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RP.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RRSIG.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RRSIG.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RRSIG.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RT.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RT.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/RT.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SOA.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SOA.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SOA.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SPF.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SPF.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SPF.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SSHFP.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SSHFP.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/SSHFP.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/TXT.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/TXT.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/TXT.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/X25.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/X25.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/X25.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/__init__.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/__init__.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/ANY/__init__.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/A.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/A.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/A.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/AAAA.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/AAAA.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/AAAA.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/APL.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/APL.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/APL.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/DHCID.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/DHCID.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/DHCID.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/IPSECKEY.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/IPSECKEY.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/IPSECKEY.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/KX.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/KX.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/KX.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NAPTR.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NAPTR.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NAPTR.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NSAP.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NSAP.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NSAP.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NSAP_PTR.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NSAP_PTR.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/NSAP_PTR.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/PX.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/PX.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/PX.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/SRV.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/SRV.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/SRV.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/WKS.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/WKS.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/WKS.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/__init__.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/__init__.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/IN/__init__.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/__init__.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/__init__.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/__init__.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/dsbase.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/dsbase.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/dsbase.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/mxbase.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/mxbase.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/mxbase.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/nsbase.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/nsbase.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/nsbase.pyo
+%{python_sitearch}/samba/third_party/dns/rdtypes/txtbase.py
+%{python_sitearch}/samba/third_party/dns/rdtypes/txtbase.pyc
+%{python_sitearch}/samba/third_party/dns/rdtypes/txtbase.pyo
+%{python_sitearch}/samba/third_party/dns/renderer.py
+%{python_sitearch}/samba/third_party/dns/renderer.pyc
+%{python_sitearch}/samba/third_party/dns/renderer.pyo
+%{python_sitearch}/samba/third_party/dns/resolver.py
+%{python_sitearch}/samba/third_party/dns/resolver.pyc
+%{python_sitearch}/samba/third_party/dns/resolver.pyo
+%{python_sitearch}/samba/third_party/dns/reversename.py
+%{python_sitearch}/samba/third_party/dns/reversename.pyc
+%{python_sitearch}/samba/third_party/dns/reversename.pyo
+%{python_sitearch}/samba/third_party/dns/rrset.py
+%{python_sitearch}/samba/third_party/dns/rrset.pyc
+%{python_sitearch}/samba/third_party/dns/rrset.pyo
+%{python_sitearch}/samba/third_party/dns/set.py
+%{python_sitearch}/samba/third_party/dns/set.pyc
+%{python_sitearch}/samba/third_party/dns/set.pyo
+%{python_sitearch}/samba/third_party/dns/tokenizer.py
+%{python_sitearch}/samba/third_party/dns/tokenizer.pyc
+%{python_sitearch}/samba/third_party/dns/tokenizer.pyo
+%{python_sitearch}/samba/third_party/dns/tsig.py
+%{python_sitearch}/samba/third_party/dns/tsig.pyc
+%{python_sitearch}/samba/third_party/dns/tsig.pyo
+%{python_sitearch}/samba/third_party/dns/tsigkeyring.py
+%{python_sitearch}/samba/third_party/dns/tsigkeyring.pyc
+%{python_sitearch}/samba/third_party/dns/tsigkeyring.pyo
+%{python_sitearch}/samba/third_party/dns/ttl.py
+%{python_sitearch}/samba/third_party/dns/ttl.pyc
+%{python_sitearch}/samba/third_party/dns/ttl.pyo
+%{python_sitearch}/samba/third_party/dns/update.py
+%{python_sitearch}/samba/third_party/dns/update.pyc
+%{python_sitearch}/samba/third_party/dns/update.pyo
+%{python_sitearch}/samba/third_party/dns/version.py
+%{python_sitearch}/samba/third_party/dns/version.pyc
+%{python_sitearch}/samba/third_party/dns/version.pyo
+%{python_sitearch}/samba/third_party/dns/wiredata.py
+%{python_sitearch}/samba/third_party/dns/wiredata.pyc
+%{python_sitearch}/samba/third_party/dns/wiredata.pyo
+%{python_sitearch}/samba/third_party/dns/zone.py
+%{python_sitearch}/samba/third_party/dns/zone.pyc
+%{python_sitearch}/samba/third_party/dns/zone.pyo
+%{python_sitearch}/samba/third_party/iso8601/__init__.py
+%{python_sitearch}/samba/third_party/iso8601/__init__.pyc
+%{python_sitearch}/samba/third_party/iso8601/__init__.pyo
+%{python_sitearch}/samba/third_party/iso8601/iso8601.py
+%{python_sitearch}/samba/third_party/iso8601/iso8601.pyc
+%{python_sitearch}/samba/third_party/iso8601/iso8601.pyo
+%{python_sitearch}/samba/third_party/iso8601/test_iso8601.py
+%{python_sitearch}/samba/third_party/iso8601/test_iso8601.pyc
+%{python_sitearch}/samba/third_party/iso8601/test_iso8601.pyo
+%{python_sitearch}/samba/upgrade.py
+%{python_sitearch}/samba/upgrade.pyc
+%{python_sitearch}/samba/upgrade.pyo
+%{python_sitearch}/samba/upgradehelpers.py
+%{python_sitearch}/samba/upgradehelpers.pyc
+%{python_sitearch}/samba/upgradehelpers.pyo
+%{python_sitearch}/samba/web_server/__init__.py
+%{python_sitearch}/samba/web_server/__init__.pyc
+%{python_sitearch}/samba/web_server/__init__.pyo
+%{python_sitearch}/samba/xattr.py
+%{python_sitearch}/samba/xattr.pyc
+%{python_sitearch}/samba/xattr.pyo
+%{python_sitearch}/samba/xattr_native.so
+%{python_sitearch}/samba/xattr_tdb.so
+%{python_sitearch}/talloc.so
+%{python_sitearch}/tdb.so
+%{python_sitearch}/tevent.py
+%{python_sitearch}/tevent.pyc
+%{python_sitearch}/tevent.pyo
    
 ## lib of perl5   
 %defattr(-,root,root)
-   /usr/share/perl5/vendor_perl/Parse/Pidl.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/CUtil.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Compat.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Dump.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Expr.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/IDL.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/NDR.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/ODL.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba3/ClientNDR.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba3/ServerNDR.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/COM/Header.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/COM/Proxy.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/COM/Stub.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/Header.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/NDR/Client.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/NDR/Parser.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/NDR/Server.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/Python.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/TDR.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Samba4/Template.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Typelist.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Util.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Wireshark/Conformance.pm
-   /usr/share/perl5/vendor_perl/Parse/Pidl/Wireshark/NDR.pm
-   /usr/share/perl5/vendor_perl/Parse/Yapp/Driver.pm
+%{perl_vendorlib}/Parse/Pidl.pm
+%{perl_vendorlib}/Parse/Pidl/CUtil.pm
+%{perl_vendorlib}/Parse/Pidl/Compat.pm
+%{perl_vendorlib}/Parse/Pidl/Dump.pm
+%{perl_vendorlib}/Parse/Pidl/Expr.pm
+%{perl_vendorlib}/Parse/Pidl/IDL.pm
+%{perl_vendorlib}/Parse/Pidl/NDR.pm
+%{perl_vendorlib}/Parse/Pidl/ODL.pm
+%{perl_vendorlib}/Parse/Pidl/Samba3/ClientNDR.pm
+%{perl_vendorlib}/Parse/Pidl/Samba3/ServerNDR.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/COM/Header.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/COM/Proxy.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/COM/Stub.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/Header.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/NDR/Client.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/NDR/Parser.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/NDR/Server.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/Python.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/TDR.pm
+%{perl_vendorlib}/Parse/Pidl/Samba4/Template.pm
+%{perl_vendorlib}/Parse/Pidl/Typelist.pm
+%{perl_vendorlib}/Parse/Pidl/Util.pm
+%{perl_vendorlib}/Parse/Pidl/Wireshark/Conformance.pm
+%{perl_vendorlib}/Parse/Pidl/Wireshark/NDR.pm
+%{perl_vendorlib}/Parse/Yapp/Driver.pm
    
 ## setup
 %defattr(-,root,root)
-   /usr/share/samba/setup/DB_CONFIG
-   /usr/share/samba/setup/ad-schema/MS-AD_Schema_2K8_Attributes.txt
-   /usr/share/samba/setup/ad-schema/MS-AD_Schema_2K8_Classes.txt
-   /usr/share/samba/setup/ad-schema/MS-AD_Schema_2K8_R2_Attributes.txt
-   /usr/share/samba/setup/ad-schema/MS-AD_Schema_2K8_R2_Classes.txt
-   /usr/share/samba/setup/ad-schema/licence.txt
-   /usr/share/samba/setup/aggregate_schema.ldif
-   /usr/share/samba/setup/cn=samba.ldif
-   /usr/share/samba/setup/display-specifiers/DisplaySpecifiers-Win2k0.txt
-   /usr/share/samba/setup/display-specifiers/DisplaySpecifiers-Win2k3.txt
-   /usr/share/samba/setup/display-specifiers/DisplaySpecifiers-Win2k3R2.txt
-   /usr/share/samba/setup/display-specifiers/DisplaySpecifiers-Win2k8.txt
-   /usr/share/samba/setup/display-specifiers/DisplaySpecifiers-Win2k8R2.txt
-   /usr/share/samba/setup/dns_update_list
-   /usr/share/samba/setup/fedora-ds-init.ldif
-   /usr/share/samba/setup/fedorads-dna.ldif
-   /usr/share/samba/setup/fedorads-index.ldif
-   /usr/share/samba/setup/fedorads-linked-attributes.ldif
-   /usr/share/samba/setup/fedorads-pam.ldif
-   /usr/share/samba/setup/fedorads-partitions.ldif
-   /usr/share/samba/setup/fedorads-refint-add.ldif
-   /usr/share/samba/setup/fedorads-refint-delete.ldif
-   /usr/share/samba/setup/fedorads-samba.ldif
-   /usr/share/samba/setup/fedorads-sasl.ldif
-   /usr/share/samba/setup/fedorads.inf
-   /usr/share/samba/setup/idmap_init.ldif
-   /usr/share/samba/setup/krb5.conf
-   /usr/share/samba/setup/memberof.conf
-   /usr/share/samba/setup/mmr_serverids.conf
-   /usr/share/samba/setup/mmr_syncrepl.conf
-   /usr/share/samba/setup/modules.conf
-   /usr/share/samba/setup/named.conf
-   /usr/share/samba/setup/named.conf.dlz
-   /usr/share/samba/setup/named.conf.update
-   /usr/share/samba/setup/named.txt
-   /usr/share/samba/setup/olc_mmr.conf
-   /usr/share/samba/setup/olc_seed.ldif
-   /usr/share/samba/setup/olc_serverid.conf
-   /usr/share/samba/setup/olc_syncrepl.conf
-   /usr/share/samba/setup/olc_syncrepl_seed.conf
-   /usr/share/samba/setup/prefixMap.txt
-   /usr/share/samba/setup/provision.ldif
-   /usr/share/samba/setup/provision.reg
-   /usr/share/samba/setup/provision.zone
-   /usr/share/samba/setup/provision_basedn.ldif
-   /usr/share/samba/setup/provision_basedn_modify.ldif
-   /usr/share/samba/setup/provision_basedn_options.ldif
-   /usr/share/samba/setup/provision_basedn_references.ldif
-   /usr/share/samba/setup/provision_computers_add.ldif
-   /usr/share/samba/setup/provision_computers_modify.ldif
-   /usr/share/samba/setup/provision_configuration.ldif
-   /usr/share/samba/setup/provision_configuration_basedn.ldif
-   /usr/share/samba/setup/provision_configuration_modify.ldif
-   /usr/share/samba/setup/provision_configuration_references.ldif
-   /usr/share/samba/setup/provision_dns_accounts_add.ldif
-   /usr/share/samba/setup/provision_dns_add_samba.ldif
-   /usr/share/samba/setup/provision_dnszones_add.ldif
-   /usr/share/samba/setup/provision_dnszones_modify.ldif
-   /usr/share/samba/setup/provision_dnszones_partitions.ldif
-   /usr/share/samba/setup/provision_group_policy.ldif
-   /usr/share/samba/setup/provision_init.ldif
-   /usr/share/samba/setup/provision_partitions.ldif
-   /usr/share/samba/setup/provision_privilege.ldif
-   /usr/share/samba/setup/provision_rootdse_add.ldif
-   /usr/share/samba/setup/provision_rootdse_modify.ldif
-   /usr/share/samba/setup/provision_schema_basedn.ldif
-   /usr/share/samba/setup/provision_schema_basedn_modify.ldif
-   /usr/share/samba/setup/provision_self_join.ldif
-   /usr/share/samba/setup/provision_self_join_config.ldif
-   /usr/share/samba/setup/provision_self_join_modify.ldif
-   /usr/share/samba/setup/provision_self_join_modify_config.ldif
-   /usr/share/samba/setup/provision_users.ldif
-   /usr/share/samba/setup/provision_users_add.ldif
-   /usr/share/samba/setup/provision_users_modify.ldif
-   /usr/share/samba/setup/provision_well_known_sec_princ.ldif
-   /usr/share/samba/setup/refint.conf
-   /usr/share/samba/setup/schema-map-fedora-ds-1.0
-   /usr/share/samba/setup/schema-map-openldap-2.3
-   /usr/share/samba/setup/schema_samba4.ldif
-   /usr/share/samba/setup/secrets.ldif
-   /usr/share/samba/setup/secrets_dns.ldif
-   /usr/share/samba/setup/secrets_init.ldif
-   /usr/share/samba/setup/secrets_sasl_ldap.ldif
-   /usr/share/samba/setup/secrets_simple_ldap.ldif
-   /usr/share/samba/setup/share.ldif
-   /usr/share/samba/setup/slapd.conf
-   /usr/share/samba/setup/spn_update_list
-   /usr/share/samba/setup/ypServ30.ldif
+%{_datadir}/samba/setup/DB_CONFIG
+%{_datadir}/samba/setup/ad-schema/MS-AD_Schema_2K8_Attributes.txt
+%{_datadir}/samba/setup/ad-schema/MS-AD_Schema_2K8_Classes.txt
+%{_datadir}/samba/setup/ad-schema/MS-AD_Schema_2K8_R2_Attributes.txt
+%{_datadir}/samba/setup/ad-schema/MS-AD_Schema_2K8_R2_Classes.txt
+%{_datadir}/samba/setup/ad-schema/licence.txt
+%{_datadir}/samba/setup/aggregate_schema.ldif
+%{_datadir}/samba/setup/cn=samba.ldif
+%{_datadir}/samba/setup/display-specifiers/DisplaySpecifiers-Win2k0.txt
+%{_datadir}/samba/setup/display-specifiers/DisplaySpecifiers-Win2k3.txt
+%{_datadir}/samba/setup/display-specifiers/DisplaySpecifiers-Win2k3R2.txt
+%{_datadir}/samba/setup/display-specifiers/DisplaySpecifiers-Win2k8.txt
+%{_datadir}/samba/setup/display-specifiers/DisplaySpecifiers-Win2k8R2.txt
+%{_datadir}/samba/setup/dns_update_list
+%{_datadir}/samba/setup/fedora-ds-init.ldif
+%{_datadir}/samba/setup/fedorads-dna.ldif
+%{_datadir}/samba/setup/fedorads-index.ldif
+%{_datadir}/samba/setup/fedorads-linked-attributes.ldif
+%{_datadir}/samba/setup/fedorads-pam.ldif
+%{_datadir}/samba/setup/fedorads-partitions.ldif
+%{_datadir}/samba/setup/fedorads-refint-add.ldif
+%{_datadir}/samba/setup/fedorads-refint-delete.ldif
+%{_datadir}/samba/setup/fedorads-samba.ldif
+%{_datadir}/samba/setup/fedorads-sasl.ldif
+%{_datadir}/samba/setup/fedorads.inf
+%{_datadir}/samba/setup/idmap_init.ldif
+%{_datadir}/samba/setup/krb5.conf
+%{_datadir}/samba/setup/memberof.conf
+%{_datadir}/samba/setup/mmr_serverids.conf
+%{_datadir}/samba/setup/mmr_syncrepl.conf
+%{_datadir}/samba/setup/modules.conf
+%{_datadir}/samba/setup/named.conf
+%{_datadir}/samba/setup/named.conf.dlz
+%{_datadir}/samba/setup/named.conf.update
+%{_datadir}/samba/setup/named.txt
+%{_datadir}/samba/setup/olc_mmr.conf
+%{_datadir}/samba/setup/olc_seed.ldif
+%{_datadir}/samba/setup/olc_serverid.conf
+%{_datadir}/samba/setup/olc_syncrepl.conf
+%{_datadir}/samba/setup/olc_syncrepl_seed.conf
+%{_datadir}/samba/setup/prefixMap.txt
+%{_datadir}/samba/setup/provision.ldif
+%{_datadir}/samba/setup/provision.reg
+%{_datadir}/samba/setup/provision.zone
+%{_datadir}/samba/setup/provision_basedn.ldif
+%{_datadir}/samba/setup/provision_basedn_modify.ldif
+%{_datadir}/samba/setup/provision_basedn_options.ldif
+%{_datadir}/samba/setup/provision_basedn_references.ldif
+%{_datadir}/samba/setup/provision_computers_add.ldif
+%{_datadir}/samba/setup/provision_computers_modify.ldif
+%{_datadir}/samba/setup/provision_configuration.ldif
+%{_datadir}/samba/setup/provision_configuration_basedn.ldif
+%{_datadir}/samba/setup/provision_configuration_modify.ldif
+%{_datadir}/samba/setup/provision_configuration_references.ldif
+%{_datadir}/samba/setup/provision_dns_accounts_add.ldif
+%{_datadir}/samba/setup/provision_dns_add_samba.ldif
+%{_datadir}/samba/setup/provision_dnszones_add.ldif
+%{_datadir}/samba/setup/provision_dnszones_modify.ldif
+%{_datadir}/samba/setup/provision_dnszones_partitions.ldif
+%{_datadir}/samba/setup/provision_group_policy.ldif
+%{_datadir}/samba/setup/provision_init.ldif
+%{_datadir}/samba/setup/provision_partitions.ldif
+%{_datadir}/samba/setup/provision_privilege.ldif
+%{_datadir}/samba/setup/provision_rootdse_add.ldif
+%{_datadir}/samba/setup/provision_rootdse_modify.ldif
+%{_datadir}/samba/setup/provision_schema_basedn.ldif
+%{_datadir}/samba/setup/provision_schema_basedn_modify.ldif
+%{_datadir}/samba/setup/provision_self_join.ldif
+%{_datadir}/samba/setup/provision_self_join_config.ldif
+%{_datadir}/samba/setup/provision_self_join_modify.ldif
+%{_datadir}/samba/setup/provision_self_join_modify_config.ldif
+%{_datadir}/samba/setup/provision_users.ldif
+%{_datadir}/samba/setup/provision_users_add.ldif
+%{_datadir}/samba/setup/provision_users_modify.ldif
+%{_datadir}/samba/setup/provision_well_known_sec_princ.ldif
+%{_datadir}/samba/setup/refint.conf
+%{_datadir}/samba/setup/schema-map-fedora-ds-1.0
+%{_datadir}/samba/setup/schema-map-openldap-2.3
+%{_datadir}/samba/setup/schema_samba4.ldif
+%{_datadir}/samba/setup/secrets.ldif
+%{_datadir}/samba/setup/secrets_dns.ldif
+%{_datadir}/samba/setup/secrets_init.ldif
+%{_datadir}/samba/setup/secrets_sasl_ldap.ldif
+%{_datadir}/samba/setup/secrets_simple_ldap.ldif
+%{_datadir}/samba/setup/share.ldif
+%{_datadir}/samba/setup/slapd.conf
+%{_datadir}/samba/setup/spn_update_list
+%{_datadir}/samba/setup/ypServ30.ldif
 
 %changelog
 * Wed Feb 3 2016  Wang Yi <wangyi8848@gmail.com> - 4.3.4
