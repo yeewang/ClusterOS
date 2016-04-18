@@ -8,7 +8,7 @@
 
 %define main_release 1
 
-%define samba_version 4.3.4
+%define samba_version 4.3.8
 %define talloc_version 2.1.3
 %define ntdb_version 1.0
 %define tdb_version 1.3.7
@@ -1109,6 +1109,7 @@ rm -rf %{buildroot}
 %{_bindir}/tdbtool
 %{_bindir}/testparm
 %{_bindir}/wbinfo
+%{_bindir}/smbspool_krb5_wrapper
    
 ## sbin
 %defattr(-,root,root)
@@ -1859,6 +1860,7 @@ rm -rf %{buildroot}
 %{_mandir}/man8/vfs_worm.8.gz
 %{_mandir}/man8/vfs_xattr_tdb.8.gz
 %{_mandir}/man8/winbindd.8.gz
+%{_mandir}/man8/smbspool_krb5_wrapper.8.gz
    
 %{_mandir}/man5/lmhosts.5.gz
 %{_mandir}/man5/smb.conf.5.gz
